@@ -17,7 +17,9 @@ int main()
 {
   int dimension,Particlenum;
   string dt,disperse,Pnum,dim;
-  string wt,rdtmp="PHIJ",rd,wt2;
+  string wt,rdtmp,wttmp,rd,wt2;
+  rdtmp=wttmp="PHIJ";
+  rdtmp="../"+rdtmp;
   
   stringstream ss,ss2;
   
@@ -38,8 +40,8 @@ int main()
   // cout<<"->";
   cin>>dim;
   rd=rdtmp+'_'+dt+'_'+dim+disperse+'N'+Pnum+".txt";
-  wt=rdtmp+"PHIJ_CumDist_"+dt+'_'+dim+disperse+'N'+Pnum+".txt";
-  wt2=rdtmp+"PHIJ_StatInfo"+dt+'_'+dim+disperse+'N'+Pnum+".txt";
+  wt=wttmp+"PHIJ_CumDist_"+dt+'_'+dim+disperse+'N'+Pnum+".txt";
+  wt2=wttmp+"PHIJ_StatInfo"+dt+'_'+dim+disperse+'N'+Pnum+".txt";
   dimension=atoi(dim.c_str());
   Particlenum=atoi(Pnum.c_str());
   
