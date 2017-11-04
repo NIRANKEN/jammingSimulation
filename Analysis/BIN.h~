@@ -1,0 +1,87 @@
+#ifndef __BIN_H
+#define __BIN_H
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+namespace binstat
+{
+  struct iprset
+  {
+    double sum;
+    double sgm;
+    double min;
+    double max;
+  };
+  void InputStr(string &a,string &b,string &c,string &d) {
+    cout<<"本プログラムは,"<<endl;
+    cout<<"(2)EigCum0xxxx_\"phi\".txt"<<endl;
+    cout<<"の統計平均をテキストにまとめるプログラムです.\n"<<endl;
+    cout<<"which \"date\" do you execute the FIRE program??"<<endl;
+    cout<<"\"date\" (e.g. 0208)-> ";
+    cin>>a;
+    cout<<"monodisperse? or bidisperse? (MONO or BI)"<<endl;
+    cout<<"->";
+    cin>>b;
+    cout<<"\nHow many particles?? (e.g. 128)"<<endl;
+    cout<<"->";
+    cin>>c;
+    cout<<"\nwhich dimension?? (2D or 3D)";
+    cout<<"->";
+    cin>>d;
+    return;
+  }
+  void InputBINrange(double &br);
+  void ZeroEigenValprocess(double S,double E,double M,int zeroeig,double allC,ofstream &ofs,int N);
+  void innerBINprocess(double c,double S,double E,double M,double &sumc,double &minc,double &maxc,int &tmpC,double &sgmc,double allC,ofstream &ofs,int cnt,double cum,int cumcnt,int N);
+  void innerBINprocess(iprset &ipr,iprset &ipr1,iprset &ipr2,double c,double d,double e,double S,double E,double M,int &tmpC,double allC,ofstream &ofs,int cnt,double cum,int cumcnt,int N);
+  void updateBINprocess(double b,double c,double &S,double &E,double &M,double &Sln10,double &Mln10,double &sumc,double &minc,double &maxc,int &tmpC,double &sgmc,double allC,double range,ofstream &ofs,int cnt,double cum,int cumcnt,int N);
+  void updateBINprocess(iprset &ipr,iprset &ipr1,iprset &ipr2,double b,double c,double d,double e,double &S,double &E,double &M,double &Sln10,double &Mln10,int &tmpC,double allC,double range,ofstream &ofs,int cnt,double cum,int cumcnt,int N);
+  void initializeBINrange(double &Sinit,double &S,double &E,double &M,double &Sln10,double &Mln10);
+  void updateBINrange(double &S,double &E,double &M,double &Sln10,double &Mln10,double range);
+  void InitializeIPRparameter(double c,double &sumc,double &minc,double &maxc,int &tmpC,double &sgmc);
+  void InitializeIPRparameter(iprset &ipr,double c,int &tmpC);
+  void ModifyIPRparameter(double c,double &sumc,double &minc,double &maxc,int &tmpC,double &sgmc);
+  void ModifyIPRparameter(iprset &ipr,double c,int &tmpC);
+  
+  void InitializeIPRSET(iprset &ipr) {
+    ipr.sgm=ipr.min=ipr.max=ipr.sum=0.0;
+  }
+  void ResetIPRSET(iprset &ipr,double c) {
+    ipr.min=ipr.max=ipr.sum=c;
+    ipr.sgm=c*c;
+  }
+  void ModifyIPRSET(iprset &ipr,double c) {
+    ipr.sum+=c;
+    if(ipr.min>c)
+      ipr.min=c;
+    if(ipr.max<c)
+      ipr.max=c;
+    ipr.sgm+=c*c;
+  }
+
+  void ResetBI_IPRs(iprset &ipr,iprset &ipr1,iprset &ipr2,double c,double d,double e,int &tmpC) {
+    tmpC=1;
+    ResetIPRSET(ipr,c);
+    ResetIPRSET(ipr1,d);
+    ResetIPRSET(ipr2,e);
+  }
+  void ModifyBI_IPRs(iprset &ipr,iprset &ipr1,iprset &ipr2,double c,double d,double e,int &tmpC) {
+    tmpC+=1;
+    ModifyIPRSET(ipr,c);
+    ModifyIPRSET(ipr1,d);
+    ModifyIPRSET(ipr2,e);
+  }
+    
+}
+
+
+
+
+
+
+
+#endif

@@ -1,0 +1,290 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdlib>
+#include <cstdio>
+#include <iomanip>
+#include <limits>
+#include <cmath>
+
+#include "BIN.h"
+
+using namespace std;
+
+
+//sampleのデータを集めるだけ。
+int main(int argc, char* argv[])
+{
+  if(argc!=2)
+    {
+      cout<<"引数が"<<argc<<"個宣言されています.\n";
+      cout<<"-----\n引数1...bin幅(log10)\n----------\nになります.(default: 0.05)\n";
+      exit(1);
+    }
+  
+  //int dimension,Particlenum;
+  double binrange=atof(argv[1]);//,EPS=numeric_limits<double>::epsilon();
+  string dt,disperse,Pnum,dim;
+  string wt,rdtmp="EIGEnsAve_",rd,str;
+  //stringstream ss;
+  ifstream ifs;
+  ifstream::pos_type pos_tmp;
+  ofstream ofs;
+  int N;
+
+  binstat::InputStr(dt,disperse,Pnum,dim);
+  //dimension=atoi(dim.c_str());
+  //Particlenum=atoi(Pnum.c_str());
+  
+  rd=rdtmp+dt+'_'+dim+disperse+'N'+Pnum+".txt";
+  ifs.open(rd.data());
+  wt=rdtmp+"BR"+argv[1]+'_'+dt+'_'+dim+disperse+'N'+Pnum+".txt";
+  ofs.open(wt.data());
+  N=atoi(Pnum.data());
+  cout<<"\n\nBINでの統計処理を開始します..."<<endl;
+
+  if(ifs.fail()) {
+    cerr<<"catnot open your file..."<<endl;
+    return 1;
+  }
+  else {
+    int C=0,cumC=0;
+    double eigTableVal[8]={0,0,0,0,0,0,0,0},EPS=numeric_limits<double>::epsilon();
+      while(getline(ifs,str)) {
+	sscanf(str.data(),"%lf %lf %lf %lf %lf %lf %lf %lf",&eigTableVal[0],&eigTableVal[1],&eigTableVal[2],&eigTableVal[3],&eigTableVal[4],&eigTableVal[5],&eigTableVal[6],&eigTableVal[7]);
+
+  	    //0.EVal
+	    //1.Freq
+	    //2.IPR
+	    //3.IPR_1st(small)
+	    //4.IPR_2nd(large)
+	    //5.the number of the participating particles (1st component)
+	    //6.DPHI
+	    //7.DPHI (center point (logscale))
+	
+	if(fabs(eigTableVal[0])>EPS)
+	  cumC++;
+	C++;
+      }
+      cout<<ifs.tellg()<<endl;
+      ifs.clear();//clear fail and eof bits
+      ifs.seekg(0,ios::beg);// back to the start
+      str="";
+      /*
+      const int C=cnt;
+      Vec_DP phi(C),eng(C),vviter(C);
+      DP PHIJ=0.0;
+      */
+      double cum=1.0/cumC,Range_e,Range_s,Range_m,Range_sinit,Range_sln10,Range_mln10,dphi; //Rangetmpはbinの始点,Rangeはbinの終点.
+      binstat::iprset ipr_all,ipr_1,ipr_2;
+      //sumcはIPRのBIN内における総和,cumは1.0/データ数.
+      int cnttmp,cnt=0,zeroeig=C-cumC,cnt_before=0;
+      cumC=0;
+      
+      binstat::InputBINrange(binrange);//引数で入力したbin幅が妥当だったらスルー.
+      binstat::initializeBINrange(Range_sinit,Range_s,Range_e,Range_m,Range_sln10,Range_mln10);
+      binstat::updateBINrange(Range_s,Range_e,Range_m,Range_sln10,Range_mln10,binrange);
+      while(getline(ifs,str)) {
+	sscanf(str.data(),"%lf %lf %lf %lf %lf %lf %lf %lf",&eigTableVal[0],&eigTableVal[1],&eigTableVal[2],&eigTableVal[3],&eigTableVal[4],&eigTableVal[5],&eigTableVal[6],&eigTableVal[7]);
+	if(cnt==0)
+	  dphi=eigTableVal[7];
+	
+	if(fabs(eigTableVal[0])>EPS)
+	  cumC++;
+	else {
+	  //ゼロ固有値process
+	  if(cnt==0) {
+	    binstat::changeSampledIPRs(ipr_all,ipr_1,ipr_2,true);
+	    binstat::ResetBI_IPRs(ipr_all,ipr_1,ipr_2,eigTableVal[2],eigTableVal[3],eigTableVal[4],eigTableVal[5],cnttmp);
+	  }
+	  else
+	    binstat::innerBINprocess(ipr_all,ipr_1,ipr_2,eigTableVal[2],eigTableVal[3],eigTableVal[4],eigTableVal[5],Range_s,Range_e,Range_m,cnttmp,C,ofs,cnt,cum,cumC,N,dphi,ifs,pos_tmp,cnt_before);
+	}
+	
+	if(cumC>=1) {
+	  if(cumC==1) {//初めて,ゼロじゃない固有値が出てきたとき
+	    //Write eig by zeroeig methods.
+	    binstat::ZeroEigenValprocess(Range_s,Range_e,Range_m,zeroeig,C,ofs,N,dphi,ifs,pos_tmp);
+	    cout<<zeroeig<<" "<<cnttmp<<endl;
+	    if(zeroeig!=cnttmp) {
+	      cerr<<"ゼロ固有値のカウント失敗."<<endl;
+	      exit(1);
+	    }
+	    cnt_before=cnttmp;
+	    binstat::changeSampledIPRs(ipr_all,ipr_1,ipr_2,true);
+	    binstat::ResetBI_IPRs(ipr_all,ipr_1,ipr_2,eigTableVal[2],eigTableVal[3],eigTableVal[4],eigTableVal[5],cnttmp);
+	    while(eigTableVal[1]>=Range_e) {
+	      binstat::updateBINrange(Range_s,Range_e,Range_m,Range_sln10,Range_mln10,binrange);
+	    }
+	  }
+	  else {//2回目以降,ゼロじゃない固有値が出てきたとき
+	    //Write eig by nonzeroeig methods
+	    if(eigTableVal[1]>=Range_sinit && !isnan(eigTableVal[1])) {
+	      //取り扱う固有振動数について処理
+	      if(eigTableVal[1]>=Range_s && eigTableVal[1]<Range_e) {
+		//bin内処理
+		//IPRの和とbin内カウント更新.
+		binstat::innerBINprocess(ipr_all,ipr_1,ipr_2,eigTableVal[2],eigTableVal[3],eigTableVal[4],eigTableVal[5],Range_s,Range_e,Range_m,cnttmp,C,ofs,cnt,cum,cumC,N,dphi,ifs,pos_tmp,cnt_before);
+	      }
+	      else {
+		//bin更新処理
+		binstat::updateBINprocess(ipr_all,ipr_1,ipr_2,eigTableVal[1],eigTableVal[2],eigTableVal[3],eigTableVal[4],eigTableVal[5],Range_s,Range_e,Range_m,Range_sln10,Range_mln10,cnttmp,C,binrange,ofs,cnt,cum,cumC,N,dphi,ifs,pos_tmp,cnt_before);
+		//cout<<ifs.tellg()<<endl;
+	      }
+	    }
+	  }
+	}
+	cnt++;//全体カウント
+      }//while end
+      ofs.close();
+  }//else(FILE open) end
+  ifs.close();
+}//end
+
+            //0.Freq (bin_middle point)
+	    //1.IPR (mean)
+	    //2.IPR_min
+	    //3.IPR_max
+	    //4.IPR_variance -DY(log scale)
+            //5.IPR_variance +DY(log scale)
+	    //6.IPR_1st component (mean)
+	    //7.IPR_2nd component (mean)
+            //8.Ratio of small particles component for i-th eigenvector (mean)
+	    //9.DOS (zero eig なし)
+	    //10.DOS (zero eig あり)
+            //11.cum DOS (zero eig なし)
+            //12.binに入ったFreqの数
+            //13.粒子数
+            //14.DPHIの値(logscale bin middle point)
+	    //15.None
+            //16.None
+            //17.None
+
+namespace binstat {
+  //テキストR&W用パラメータ代入メソッド.
+  //BINrange設定用メソッド.
+  void InputBINrange(double &br) {
+    int cnt=0;
+    while(br<0.0001 || br>0.1) {
+      cout<<"bin幅(log10)が不適切なので再度取ります.入力してください.(MAX:0.1, MIN:0.0001)"<<endl;
+      cout<<"-> ";
+      cin>>br;
+      cnt+=1;
+      if(cnt>20) {
+	cerr<<"Invalid binrange for your statistics"<<endl;
+	exit(1);
+      }
+    }    
+    return;
+  }
+
+  void ZeroEigenValprocess(double S,double E,double M,int zeroeig,double allC,ofstream &ofs,int N,double DPHI,ifstream &ifs,ifstream::pos_type &ps)
+{
+  double deltaomega_inv=1.0/(E-S),allC_inv=1.0/allC;
+  ofs<<M<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<allC_inv*zeroeig*deltaomega_inv<<" "<<0<<" "<<zeroeig<<" "<<N<<" "<<DPHI<<endl;
+  //0で埋めているところをどうするかは後で考える.
+  ps=ifs.tellg();
+}
+  
+  //bin内処理メソッド.
+  void innerBINprocess(iprset &ipr,iprset &ipr1,iprset &ipr2,double c,double d,double e,double sCR,double S,double E,double M,int &tmpC,double allC,ofstream &ofs,int &cnt,double cum,int cumcnt,int N,double DPHI,ifstream &ifs,ifstream::pos_type &ps,int &cnt_b) {
+    
+    ModifyBI_IPRs(ipr,ipr1,ipr2,c,d,e,sCR,tmpC);
+    if(cnt==allC-1) {
+      double T=1.0/tmpC;
+      if(ipr.meanSampled) {
+	double variance=T*ipr.sgm,dy=pow(10,sqrt(variance));
+	//double variance_1=T*ipr1.sgm;
+	//double variance_2=T*ipr2.sgm;
+	double deltaomega_inv=1.0/(E-S),allC_inv=1.0/allC;
+	//FILE末端ならば書き込み sqrtに意味がない.
+	ofs<<M<<" "<<ipr.mean<<" "<<ipr.min<<" "<<ipr.max<<" "<<ipr.mean*(1.0/dy)<<" "<<ipr.mean*dy<<" "<<ipr1.mean<<" "<<ipr2.mean<<" "<<T*ipr.smallCR_sum<<" "<<tmpC*cum*deltaomega_inv<<" "<<allC_inv*tmpC*deltaomega_inv<<" "<<(cumcnt)*cum<<" "<<tmpC<<" "<<N<<" "<<DPHI<<endl;
+	
+      }
+      else {
+	ipr.mean=T*ipr.mean;
+	ipr1.mean=T*ipr1.mean;
+	ipr2.mean=T*ipr2.mean;
+	ResetBI_IPRs(ipr,ipr1,ipr2,c,d,e,sCR,tmpC);
+	ifs.seekg(ps);
+	cnt=cnt_b;
+      }
+    }
+  }
+
+  //bin更新処理メソッド.
+  void updateBINprocess(iprset &ipr,iprset &ipr1,iprset &ipr2,double b,double c,double d,double e,double sCR,double &S,double &E,double &M,double &Sln10,double &Mln10,int &tmpC,double allC,double range,ofstream &ofs,int &cnt,double cum,int cumcnt,int N,double DPHI,ifstream &ifs,ifstream::pos_type &ps,int &cnt_b) {
+    //cout<<"update"<<endl;
+    double T=1.0/tmpC,variance,deltaomega_inv,allC_inv,dy;
+    if(ipr.meanSampled) {
+      variance=T*ipr.sgm;
+      dy=pow(10,sqrt(variance));
+      //double variance_1=T*ipr1.sgm;
+      //double variance_2=T*ipr2.sgm;
+      deltaomega_inv=1.0/(E-S);
+      allC_inv=1.0/allC;
+
+      if(cnt<0) {
+	cerr<<"your simulation must be periodic...\n(must detect zero frequency modes)"<<endl;
+	exit(1);
+      }
+      else {
+	//........BINrangeミスってなければ必ずこのループに入る.
+	ofs<<M<<" "<<ipr.mean<<" "<<ipr.min<<" "<<ipr.max<<" "<<ipr.mean*(1.0/dy)<<" "<<ipr.mean*dy<<" "<<ipr1.mean<<" "<<ipr2.mean<<" "<<T*ipr.smallCR_sum<<" "<<tmpC*cum*deltaomega_inv<<" "<<allC_inv*tmpC*deltaomega_inv<<" "<<(cumcnt)*cum<<" "<<tmpC<<" "<<N<<" "<<DPHI<<endl;
+	ps=ifs.tellg();
+	cnt_b=cnt;
+
+	while(b>=E) {
+	  //次に書き込みを行うBIN範囲を探索.
+	  //cout<<setprecision(10)<<b<<' '<<E<<endl;
+	  updateBINrange(S,E,M,Sln10,Mln10,range);
+	}
+	if(b<S||b>=E) {
+	  cerr<<"range-error!!"<<endl;
+	  cerr<<setprecision(15)<<"omega is "<<b<<", range is"<<S<<"<= xx <"<<E<<endl;
+	  exit(1);
+	}
+	ResetBI_IPRs(ipr,ipr1,ipr2,c,d,e,sCR,tmpC);
+            
+	//次の処理に対して,1個分のデータ入った状態で初期化.      
+	if(cnt==allC-1) {
+	  //FILE末端ならば書き込み, 要変更.
+	  ofs<<M<<" "<<ipr.mean<<" "<<ipr.min<<" "<<ipr.max<<" "<<ipr.mean*(1.0/dy)<<" "<<ipr.mean*dy<<" "<<ipr1.mean<<" "<<ipr2.mean<<" "<<T*ipr.smallCR_sum<<" "<<tmpC*cum*deltaomega_inv<<" "<<allC_inv*tmpC*deltaomega_inv<<" "<<(cumcnt)*cum<<" "<<tmpC<<" "<<N<<" "<<DPHI<<endl;
+	}
+	else if(cnt>=allC){
+	  //例外処理.
+	  cerr<<"your program is so poor!!!"<<endl;
+	  exit(1);
+	}
+      }
+    }
+    else {
+      ipr.mean=T*ipr.mean;
+      ipr1.mean=T*ipr1.mean;
+      ipr2.mean=T*ipr2.mean;
+      ResetBI_IPRs(ipr,ipr1,ipr2,c,d,e,sCR,tmpC);
+      ifs.seekg(ps);
+      cnt=cnt_b;
+    }
+  }//update end
+
+  void initializeBINrange(double &Sinit,double &S,double &E,double &M,double &Sln10,double &Mln10) {
+    E=1.0e-8;//1.0e-6->1.0e-8
+    Mln10=Sln10=-8;//-6->-8
+    Sinit=S=M=E;
+    return;
+  }
+
+  void updateBINrange(double &S,double &E,double &M,double &Sln10,double &Mln10,double range) {
+    //cout<<S<<" "<<M<<" "<<E<<endl;
+    S=E;
+    Sln10+=range;
+    E=pow(10,Sln10);
+    Mln10=Sln10+0.5*range;
+    M=pow(10,Mln10);
+    return;
+  }
+
+  void writeEIGinfo_EOF();
+  
+}//namespace binstat end

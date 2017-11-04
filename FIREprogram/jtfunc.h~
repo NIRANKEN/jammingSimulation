@@ -1,0 +1,1757 @@
+#ifndef _JTFUNC_H_
+#define _JTFUNC_H_
+
+#include "jttool.h"
+#include "nr.h"
+#include "MT.h"
+#include <vector>
+#include <limits>
+
+namespace JT
+{
+  struct NNset
+  {
+    int child;
+    int parent;
+  };
+  //--------------------//
+  //-------JT func------//
+  //----(jtfunc.cpp)----//
+  //--------------------//
+  
+  namespace dim2
+  {
+    DP potential(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2, int D,DP eps);
+    DP potential(Vec_I_DP &p,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2, int D,DP eps);
+    DP fastPot2D(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    DP fastPot2D(Vec_I_DP &p,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    void Hesspot(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps);//alpha =2.0 only...
+    void fastHess2D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    void DISTcod2D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP rt,int Prt1,int Prt2,int D);
+    void fastDCod2D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP rt,int Prt1,int Prt2,int D,NRVec<vector<int> > &v);
+    void searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,vector<int> &NN,int num_p_pre);
+    void searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,vector<int> &NN,vector<int> exList);
+    void searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,vector<NNset> &NN,vector<int> exList);
+    void searchSoftMode(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly);
+    void searchCoCluster(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,int &Ncluster);
+    void searchCoCluster_qt(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,Vec_IO_INT &att,int &Ncluster);
+    void noise(Vec_IO_DP& p,DP R,DP Lx,DP Ly,DP n_disp_ratio);
+  }
+
+  namespace dim3
+  {
+    DP potential3D(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps);
+    DP potential3D(Vec_I_DP &p,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps);
+    DP fastPot3D(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    DP fastPot3D(Vec_I_DP &p,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    void Hesspot3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps);
+    void fastHess3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    void DISTcod3D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP Lz,DP rt,int Prt1,int Prt2,int D);
+    void fastDCod3D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP Lz,DP rt,int Prt1,int Prt2,int D,NRVec<vector<int> > &v);
+    void searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz,vector<int> &NN,int num_p_pre);
+    void searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz,vector<int> &NN,vector<int> exList);
+    void searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz,vector<NNset> &NN,vector<int> exList);
+    void searchSoftMode(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz);
+    void noise(Vec_IO_DP& p,DP R,DP Lx,DP Ly,DP Lz,DP n_disp_ratio);
+  }
+  
+  inline void distcalc(Vec_IO_DP &dcod,Vec_I_INT num);
+  void tappingForUnstable(Vec_IO_DP& EigDispvec,DP eigval,DP EPS,DP R,DP disp_ratio);
+  void noise(Vec_IO_DP& p,DP R,DP Len,DP n_disp_ratio);
+  bool isExcludedParticle(int num,vector<int> v);
+  bool isSearchedParticle(int num,vector<int> v);
+  bool isSearchedParticle(int num,vector<NNset> v);
+  void classifySoftCluster(vector<int> &soft,int groupNum,vector<vector<int> >nnset);
+  inline void HessCalc(Mat_IO_DP &H,int i,int j,DP ijF,DP iiF,DP jjF,DP rr);
+  inline void HessCalc(Mat_IO_DP &H,int i1,int i2,int j1,int j2,DP ijF,DP iiF,DP jjF,DP rr);
+  DP migrationLengthOnCSpace(Vec_I_DP zahyo,Vec_I_DP zahyotmp);
+  //void selectWorkingParticle(int num,vector<int> &v);
+}
+
+
+//---------------------------------------------------
+//potential V(2D)を求める関数------------------------
+//---------------------------------------------------
+
+DP JT::dim2::potential(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2, int D, DP eps)
+{
+  if(checkdim2(D)) {
+    int N=p.size();
+    DP sgm,pot=0.0,Radi=R,Radj,x,y,relr,powterm;
+    bool m1=false,m2;
+    for(int i=0;i<N;i+=D) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      initializeParticle2(Radj,R,x,y,p[i],p[i+1],m2);
+      for(int j=0;j<i;j+=D) {
+	updateRadius(j,Radj,rt,Prt1,Prt2,N,m2);
+	if(overlapped2D(x,y,p[j],p[j+1],Len,Len,Radi,Radj,sgm,relr)) {
+	  powterm = (sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }//j-loop-end
+    }//i-loop-end
+    return pot;
+  }
+  else
+    return 0.0;
+}//End
+DP JT::dim2::potential(Vec_I_DP &p,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2, int D,DP eps)
+{
+ if(checkdim2(D)) {
+    int N=p.size();
+    DP sgm,pot=0.0,Radi=R,Radj,relr,powterm,x,y;
+    bool m1=false,m2;
+    for(int i=0;i<N;i+=D) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      initializeParticle2(Radj,R,x,y,p[i],p[i+1],m2);
+      for(int j=0;j<i;j+=D) {
+	updateRadius(j,Radj,rt,Prt1,Prt2,N,m2);
+	if(overlapped2D(x,y,p[j],p[j+1],Lx,Ly,Radi,Radj,sgm,relr)) {
+	  powterm = (sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }//j-loop-end
+    }//i-loop-end
+    return pot;
+  }
+  else
+    return 0.0;
+}
+DP JT::dim3::potential3D(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps)
+{
+  if(checkdim3(D)) {
+    int N=p.size();
+    DP sgm,pot=0.0,Radi=R,Radj,relr,powterm,x,y,z;
+    bool m1=false,m2;
+    for(int i=0;i<N;i+=D) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      initializeParticle2(Radj,R,x,y,z,p[i],p[i+1],p[i+2],m2);
+
+      for(int j=0;j<i;j+=D) {
+	updateRadius(j,Radj,rt,Prt1,Prt2,N,m2);
+	if(overlapped3D(x,y,z,p[j],p[j+1],p[j+2],Len,Len,Len,Radi,Radj,sgm,relr)) {
+	  powterm=(sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }//j-loop-end
+    }//i-loop-end
+    return pot;
+  }
+  else
+    return 0.0;
+}//End
+DP JT::dim3::potential3D(Vec_I_DP &p,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps)
+{
+  if(checkdim3(D)) {
+    int N=p.size();
+    DP sgm,pot=0.0,Radi=R,Radj,relr,powterm,x,y,z;
+    bool m1=false,m2;
+    for(int i=0;i<N;i+=D) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      initializeParticle2(Radj,R,x,y,z,p[i],p[i+1],p[i+2],m2);
+
+      for(int j=0;j<i;j+=D) {
+	updateRadius(j,Radj,rt,Prt1,Prt2,N,m2);
+	if(overlapped3D(x,y,z,p[j],p[j+1],p[j+2],Lx,Ly,Lz,Radi,Radj,sgm,relr)) {
+	  powterm=(sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }//j-loop-end
+    }//i-loop-end
+    return pot;
+  }
+  else
+    return 0.0;
+}//End
+
+
+DP JT::dim2::fastPot2D(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(checkdim2(D)) {
+
+    int N=v.size(),K,I;
+    DP sgm,pot=0.0,Radi=R,Radk,relr,powterm;
+    DP x,y;
+    bool m1=false,m2;
+    if(p.size()!=D*v.size()) {
+      cerr<<"接触リストのサイズがおかしいのです!!"<<endl;
+      exit(1);
+    }
+    for(int i=0;i<N;i++) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2(Radk,R,x,y,p[I],p[I+1],m2);
+      
+      for(unsigned int j=0;j<v[i].size();j++) {
+	K=D*v[i][j];//iばんめの接触リストについて,
+	updateRadiusF(K,Radk,rt,Prt1,Prt2,N,D,m2);
+	if(overlapped2D(x,y,p[K],p[K+1],Len,Len,Radi,Radk,sgm,relr)) {
+	  powterm=(sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }// j-loop
+    }// i-loop
+    return pot;
+  }
+  return 0.0;
+}
+DP JT::dim2::fastPot2D(Vec_I_DP &p,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(checkdim2(D)) {
+
+    int N=v.size(),K,I;
+    DP sgm,pot=0.0,Radi=R,Radk,relr,powterm;
+    DP x,y;
+    bool m1=false,m2;
+    if(p.size()!=D*v.size()) {
+      cerr<<"接触リストのサイズがおかしいのです!!"<<endl;
+      exit(1);
+    }
+    for(int i=0;i<N;i++) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2(Radk,R,x,y,p[I],p[I+1],m2);
+      
+      for(unsigned int j=0;j<v[i].size();j++) {
+	K=D*v[i][j];//iばんめの接触リストについて,
+	updateRadiusF(K,Radk,rt,Prt1,Prt2,N,D,m2);
+	if(overlapped2D(x,y,p[K],p[K+1],Lx,Ly,Radi,Radk,sgm,relr)) {
+	  powterm=(sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }// j-loop
+    }// i-loop
+    return pot;
+  }
+  return 0.0;
+}
+DP JT::dim3::fastPot3D(Vec_I_DP &p,DP Len,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(checkdim3(D)) {
+
+    int N=v.size(),K,I,cnt=0;
+    DP sgm,pot=0.0,Radi=R,Radk,relr,powterm;
+    DP x,y,z;
+    bool m1=false,m2;
+    if(p.size()!=D*v.size()) {
+      cerr<<"接触リストのサイズがおかしいのです!!"<<endl;
+      exit(1);
+    }
+
+    for(int i=0;i<N;i++) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2(Radk,R,x,y,z,p[I],p[I+1],p[I+2],m2);
+      for(unsigned int j=0;j<v[i].size();j++) {
+	K=D*v[i][j];//iばんめの接触リストについて,
+	updateRadiusF(K,Radk,rt,Prt1,Prt2,N,D,m2);
+	if(overlapped3D(x,y,z,p[K],p[K+1],p[K+2],Len,Len,Len,Radi,Radk,sgm,relr)) {
+	  cnt++;
+	  powterm=(sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }// j-loop
+    }// i-loop
+    //    cout<<cnt<<endl;
+    return pot;
+  }
+  return 0.0;
+}
+DP JT::dim3::fastPot3D(Vec_I_DP &p,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(checkdim3(D)) {
+
+    int N=v.size(),K,I;
+    DP sgm,pot=0.0,Radi=R,Radk,relr,powterm;
+    DP x,y,z;
+    bool m1=false,m2;
+    if(p.size()!=D*v.size()) {
+      cerr<<"接触リストのサイズがおかしいのです!!"<<endl;
+      exit(1);
+    }
+    for(int i=0;i<N;i++) {
+      updateRadius(i,Radi,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2(Radk,R,x,y,z,p[I],p[I+1],p[I+2],m2);
+      for(unsigned int j=0;j<v[i].size();j++) {
+	K=D*v[i][j];//iばんめの接触リストについて,
+	updateRadiusF(K,Radk,rt,Prt1,Prt2,N,D,m2);
+	if(overlapped3D(x,y,z,p[K],p[K+1],p[K+2],Lx,Ly,Lz,Radi,Radk,sgm,relr)) {
+	  powterm=(sgm*sgm-relr*relr)/(sgm*sgm+sgm*relr);
+	  pot+=eps*pow(powterm,alp)/alp;
+	  //pot_ij = eps*(1-(relr/sgm))^\alpha /\alpha
+	}
+      }// j-loop
+    }// i-loop
+    return pot;
+  }
+  return 0.0;
+}
+
+
+//--------------------------------------------------
+//-----------------Hessian Matrix(2D)---------------
+//--------------------------------------------------
+
+void JT::dim2::Hesspot(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps)//alpha =2.0 only...
+//BIdisperse を計算する場合,実際の系の固有ベクター{\bm e}_{sys}をM^{-1/2}{\bm e}_{this}で求めねばならない.
+{
+  if(alp!=2.0) {
+    cerr<<"invalid potential exponent alpha..."<<endl;
+    exit(1);
+  }
+  if(checkdim2(D)) {
+    int N =p.size();
+    DP sgm,tmpxx,tmpxy,tmpyy,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,rx2,ry2,rxy,r3,fs,ii,ij,jj;
+    bool m1=false,m2;
+    H=0.0;
+    
+    for(int i=0;i<N;i+=D) {
+      updateRadius_Hessian2D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
+      initializeParticle2_H(Radj,R,x,y,p[i],p[i+1],m2,rtinv_j,1.0);
+
+      for(int j=0;j<i;j+=D) {
+	updateRadius_Hessian2D(j,Radj,rtinv_j,rt,Prt1,Prt2,N,m2);
+	
+	  if(overlapped2D_H(x,y,p[j],p[j+1],Lx,Ly,Radi,Radj,sgm,relr,rx2,ry2,rxy)) {
+	    r3=relr*relr*relr;
+	    fact=eps/(sgm*sgm*r3);
+	    r3*=fact;
+	    fs=fact*sgm;
+	    
+	    tmpxx=fs*ry2-r3;
+	    tmpxy=-fs*(rxy);
+	    tmpyy=fs*rx2-r3;
+
+	    ii=rtinv_i*rtinv_i;
+	    ij=rtinv_i*rtinv_j;
+	    jj=rtinv_j*rtinv_j;
+
+	    HessCalc(H,i,j,ij,ii,jj,tmpxx);
+	    HessCalc(H,i,i+1,j,j+1,ij,ii,jj,tmpxy);
+	    HessCalc(H,i+1,j+1,ij,ii,jj,tmpyy);
+	  }
+      }//j-loop-end
+    }//i-loop-end
+  }//if end
+  return;
+}
+//--------------------------------------------------
+//-----------------Hessian Matrix(3D)---------------
+//--------------------------------------------------
+
+void JT::dim3::Hesspot3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps)
+//BIdisperse を計算する場合,実際の系の固有ベクター{\bm e}_{sys}をM^{-1/2}{\bm e}_{this}で求めねばならない.
+{
+  if(alp!=2.0) {
+    cerr<<"invalid potential exponent alpha..."<<endl;
+    exit(1);
+  }
+  if(checkdim3(D)) {
+    int N =p.size();
+    DP sgm,tmpxx,tmpxy,tmpyy,tmpyz,tmpzz,tmpzx,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,z,rx2,ry2,rz2,rxy,ryz,rzx,r3,ii,ij,jj,fs;
+    bool m1=false,m2;
+    H=0.0;
+    
+    for(int i=0;i<N;i+=D) {
+      updateRadius_Hessian3D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
+      initializeParticle2_H(Radj,R,x,y,z,p[i],p[i+1],p[i+2],m2,rtinv_j,1.0);
+	for(int j=0;j<i;j+=D) {
+	  updateRadius_Hessian3D(j,Radj,rtinv_j,rt,Prt1,Prt2,N,m2);
+	  if(overlapped3D_H(x,y,z,p[j],p[j+1],p[j+2],Lx,Ly,Lz,Radi,Radj,sgm,relr,rx2,ry2,rz2,rxy,ryz,rzx)) {
+	    r3=relr*relr*relr;
+	    fact=eps/(sgm*sgm*r3);
+	    r3*=fact;
+	    fs=fact*sgm;
+		  
+	    tmpxx=fs*(ry2+rz2)-r3;
+	    tmpxy=-fs*(rxy);
+	    tmpyy=fs*(rz2+rx2)-r3;
+	    tmpyz=-fs*(ryz);
+	    tmpzz=fs*(rx2+ry2)-r3;
+	    tmpzx=-fs*(rzx);
+	    ii=rtinv_i*rtinv_i;
+	    ij=rtinv_i*rtinv_j;
+	    jj=rtinv_j*rtinv_j;
+
+	    HessCalc(H,i,j,ij,ii,jj,tmpxx);
+	    HessCalc(H,i,i+1,j,j+1,ij,ii,jj,tmpxy);
+	    HessCalc(H,i+1,j+1,ij,ii,jj,tmpyy);
+	    HessCalc(H,i+1,i+2,j+1,j+2,ij,ii,jj,tmpyz);
+	    HessCalc(H,i+2,j+2,ij,ii,jj,tmpzz);
+	    HessCalc(H,i+2,i,j+2,j,ij,ii,jj,tmpzx);
+	  }
+	}//j-loop-end
+      }//i-loop-end
+  }
+  return;
+}
+
+void JT::dim2::fastHess2D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(alp!=2.0) {
+    cerr<<"invalid potential exponent alpha..."<<endl;
+    exit(1);
+  }
+  if(checkdim2(D)) {
+
+    int N =v.size(),I,J;
+    DP sgm,tmpxx,tmpxy,tmpyy,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,rx2,ry2,rxy,r3,ii,ij,jj,fs;
+    bool m1=false,m2;
+    H=0.0;
+    
+    for(int i=0;i<N;i++) {
+      updateRadius_Hessian2D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2_H(Radj,R,x,y,p[I],p[I+1],m2,rtinv_j,1.0);
+	for(unsigned int l=0;l<v[i].size();l++) {
+	  J=D*v[i][l];
+	  updateRadiusF_Hessian2D(J,Radj,rtinv_j,rt,Prt1,Prt2,N,D,m2);
+	  if(overlapped2D_H(x,y,p[J],p[J+1],Lx,Ly,Radi,Radj,sgm,relr,rx2,ry2,rxy)) {
+	    r3=relr*relr*relr;
+	    fact=eps/(sgm*sgm*r3);
+	    r3*=fact;
+	    fs=fact*sgm;
+	    
+	    tmpxx=fs*ry2-r3;
+	    tmpxy=-fs*(rxy);
+	    tmpyy=fs*rx2-r3;
+
+	    ii=rtinv_i*rtinv_i;
+	    ij=rtinv_i*rtinv_j;
+	    jj=rtinv_j*rtinv_j;
+
+	    HessCalc(H,I,J,ij,ii,jj,tmpxx);
+	    HessCalc(H,I,I+1,J,J+1,ij,ii,jj,tmpxy);
+	    HessCalc(H,I+1,J+1,ij,ii,jj,tmpyy);
+	  }
+	}//j-loop-end
+      }//i-loop-end
+  }
+  return;
+}
+void JT::dim3::fastHess3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(alp!=2.0) {
+    cerr<<"invalid potential exponent alpha..."<<endl;
+    exit(1);
+  }
+  if(checkdim3(D)) {
+
+    int N =v.size(),J,I;
+    DP sgm,tmpxx,tmpxy,tmpyy,tmpyz,tmpzz,tmpzx,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,z,rx2,ry2,rz2,rxy,ryz,rzx,r3,ii,ij,jj,fs;
+    bool m1=false,m2;
+    H=0.0;
+    
+    for(int i=0;i<N;i++) {
+      updateRadius_Hessian3D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2_H(Radj,R,x,y,z,p[I],p[I+1],p[I+2],m2,rtinv_j,1.0);
+	for(unsigned int l=0;l<v[i].size();l++) {
+	  J=D*v[i][l];
+	  updateRadiusF_Hessian3D(J,Radj,rtinv_j,rt,Prt1,Prt2,N,D,m2);
+	  if(overlapped3D_H(x,y,z,p[J],p[J+1],p[J+2],Lx,Ly,Lz,Radi,Radj,sgm,relr,rx2,ry2,rz2,rxy,ryz,rzx)) {
+	    r3=relr*relr*relr;
+	    fact=eps/(sgm*sgm*r3);
+	    r3*=fact;
+	    fs=fact*sgm;
+		  
+	    tmpxx=fs*(ry2+rz2)-r3;
+	    tmpxy=-fs*(rxy);
+	    tmpyy=fs*(rz2+rx2)-r3;
+	    tmpyz=-fs*(ryz);
+	    tmpzz=fs*(rx2+ry2)-r3;
+	    tmpzx=-fs*(rzx);
+	    ii=rtinv_i*rtinv_i;
+	    ij=rtinv_i*rtinv_j;
+	    jj=rtinv_j*rtinv_j;
+
+	    HessCalc(H,I,J,ij,ii,jj,tmpxx);
+	    HessCalc(H,I,I+1,J,J+1,ij,ii,jj,tmpxy);
+	    HessCalc(H,I+1,J+1,ij,ii,jj,tmpyy);
+	    HessCalc(H,I+1,I+2,J+1,J+2,ij,ii,jj,tmpyz);
+	    HessCalc(H,I+2,J+2,ij,ii,jj,tmpzz);
+	    HessCalc(H,I+2,I,J+2,J,ij,ii,jj,tmpzx);
+	  }
+	}//j-loop-end
+      }//i-loop-end
+  }
+  return;
+}
+
+//--------------------------------------------------
+//Distribution of coordination numberを計算func-----
+//--------------------------------------------------
+
+inline void JT::distcalc(Vec_IO_DP &Dcod,Vec_I_INT num)
+{
+  int pN=num.size();
+  DP dvd=1.0/pN;
+  for(int i=0;i<pN;i++)
+    {
+      switch(num[i])
+	{
+	case 0:Dcod[0]+=dvd;
+	  break;
+	case 1:Dcod[1]+=dvd;
+	  break;
+	case 2:Dcod[2]+=dvd;
+	  break;
+	case 3:Dcod[3]+=dvd;
+	  break;
+	case 4:Dcod[4]+=dvd;
+	  break;
+	case 5:Dcod[5]+=dvd;
+	  break;
+	case 6:Dcod[6]+=dvd;
+	  break;
+	case 7:Dcod[7]+=dvd;
+	  break;
+	case 8:Dcod[8]+=dvd;
+	  break;
+	case 9:Dcod[9]+=dvd;
+	  break;
+	case 10:Dcod[10]+=dvd;
+	  break;
+	case 11:Dcod[11]+=dvd;
+	  break;
+	case 12:Dcod[12]+=dvd;
+	  break;
+	case 13:Dcod[13]+=dvd;
+	  break;
+  	case 14:Dcod[14]+=dvd;
+	  break;
+	case 15:Dcod[15]+=dvd;
+	  break;
+	case 16:Dcod[16]+=dvd;
+	  break;
+	case 17:Dcod[17]+=dvd;
+	  break;
+	case 18:Dcod[18]+=dvd;
+	  break;
+	case 19:Dcod[19]+=dvd;
+	  break;
+	default:cout<<"-----------------\n接触数が20点以上見つかっちゃいましたぁ〜!!\n--------------------\n";
+	  break;
+	}
+    }
+}
+
+void JT::dim2::DISTcod2D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP rt,int Prt1,int Prt2,int D)
+//座標値と半径、セル長さを受け取って次数i(粒子の接触数)の分布Dcod[i]を返却する関数である。(0~6までのベクトル型,sizeを7で宣言すべし)
+{
+  int N=p.size();
+  int pN=N/D,dn=Dcod.size();
+  Vec_INT tmpnum(pN);
+  DP sgm,relr,Ri=R,Rj=R,x,y;
+  bool m1=false,m2;
+  for(int i=0;i<pN;i++) {
+    if(i<dn)
+      Dcod[i]=0.0;
+    tmpnum[i]=0;//i粒子の接触数.
+  }
+  if(D==2) {
+    for(int i=0;i<N;i+=D) {
+      updateRadius(i,Ri,rt,Prt1,Prt2,N,m1);
+      Rj=R;
+      m2=false;
+      x=p[i];
+      y=p[i+1];
+      for(int j=0;j<i;j+=D) {
+	updateRadius(j,Rj,rt,Prt1,Prt2,N,m2);
+	if(overlapped2D(x,y,p[j],p[j+1],Lx,Ly,Ri,Rj,sgm,relr)) {
+	  tmpnum[i/D]+=1;
+	  tmpnum[j/D]+=1;
+	}
+      }//for-j-end
+    }//for-i-end
+  }
+  distcalc(Dcod,tmpnum);
+}//end void NR::DISTcod
+void JT::dim3::DISTcod3D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP Lz,DP rt,int Prt1,int Prt2,int D)
+//座標値と半径、セル長さを受け取って次数i(粒子の接触数)の分布Dcod[i]を返却する関数である。(0~6までのベクトル型,sizeを7で宣言すべし)
+{
+  int N=p.size();
+  int pN=N/D,dn=Dcod.size();
+  Vec_INT tmpnum(pN);
+  DP sgm,relr,Ri=R,Rj=R,x,y,z;
+  bool m1=false,m2;
+  for(int i=0;i<pN;i++) {
+    if(i<dn)
+      Dcod[i]=0.0;
+    tmpnum[i]=0;//i粒子の接触数.
+  }
+  if(D==3) {
+    for(int i=0;i<N;i+=D) {
+      updateRadius(i,Ri,rt,Prt1,Prt2,N,m1);
+      Rj=R;
+      m2=false;
+      x=p[i];
+      y=p[i+1];
+      z=p[i+2];
+      for(int j=0;j<i;j+=D) {
+	updateRadius(j,Rj,rt,Prt1,Prt2,N,m2);
+	if(overlapped3D(x,y,z,p[j],p[j+1],p[j+2],Lx,Ly,Lz,Ri,Rj,sgm,relr)) {
+	  tmpnum[i/D]+=1;
+	  tmpnum[j/D]+=1;
+	}
+      }//for-j-end
+    }//for-i-end
+  }
+  distcalc(Dcod,tmpnum);
+}//end void NR::DISTcod
+
+void JT::dim2::fastDCod2D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP rt,int Prt1,int Prt2,int D,NRVec<vector<int> > &v)
+//座標値と半径、セル長さを受け取って次数i(粒子の接触数)の分布Dcod[i]を返却する関数である。(0~6までのベクトル型,sizeを7で宣言すべし)
+{
+  //cout<<"DCod2D start"<<endl;
+  int N=v.size();
+  if(p.size()!=D*N) {
+    cerr<<"接触リストのサイズが違うにゃあ!!"<<endl;
+    exit(1);
+  }
+  Vec_INT tmpnum(N);
+  int j,I,J,dn=Dcod.size();
+  DP sgm,relr,Ri=R,Rj=R,x,y;
+  bool m1=false,m2;
+  for(int i=0;i<N;i++) {
+    if(i<dn)
+      Dcod[i]=0.0;
+    tmpnum[i]=0;//i粒子の接触数.
+  }
+  if(D==2) {
+    for(int i=0;i<N;i++) {
+      updateRadius(i,Ri,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2(Rj,R,x,y,p[I],p[I+1],m2);
+      for(unsigned int l=0;l<v[i].size();l++) {
+	j=v[i][l];
+	J=D*j;
+	updateRadiusF(J,Rj,rt,Prt1,Prt2,N,D,m2);
+	if(overlapped2D(x,y,p[J],p[J+1],Lx,Ly,Ri,Rj,sgm,relr)) {
+	  tmpnum[i]+=1;
+	  tmpnum[j]+=1;
+	}
+      }//for-j-end
+    }//for-i-end
+  }
+  distcalc(Dcod,tmpnum);
+}//end void NR::DISTcod
+void JT::dim3::fastDCod3D(Vec_I_DP &p,Vec_IO_DP &Dcod,DP R,DP Lx,DP Ly,DP Lz,DP rt,int Prt1,int Prt2,int D,NRVec<vector<int> > &v)
+//座標値と半径、セル長さを受け取って次数i(粒子の接触数)の分布Dcod[i]を返却する関数である。(0~6までのベクトル型,sizeを7で宣言すべし)
+{
+  //cout<<"DCod3D start"<<endl;
+  int N=v.size();
+  if(p.size()!=D*N) {
+    cerr<<"接触リストのサイズが違うにゃあ!!"<<endl;
+    exit(1);
+  }
+  Vec_INT tmpnum(N);
+  int I,j,J,dn=Dcod.size();
+  DP sgm,relr,Ri=R,Rj=R,x,y,z;
+  bool m1=false,m2;
+  for(int i=0;i<N;i++) {
+    if(i<dn)
+      Dcod[i]=0.0;
+    tmpnum[i]=0;//i粒子の接触数.
+  }
+  if(D==3) {
+    for(int i=0;i<N;i++) {
+      updateRadius(i,Ri,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      initializeParticle2(Rj,R,x,y,z,p[I],p[I+1],p[I+2],m2);
+      for(unsigned int l=0;l<v[i].size();l++) {
+	j=v[i][l];
+	J=D*j;
+	updateRadiusF(J,Rj,rt,Prt1,Prt2,N,D,m2);
+	if(overlapped3D(x,y,z,p[J],p[J+1],p[J+2],Lx,Ly,Lz,Ri,Rj,sgm,relr)) {
+	  tmpnum[i]+=1;
+	  tmpnum[j]+=1;
+	}
+      }//for-j-end
+    }//for-i-end
+  }
+  distcalc(Dcod,tmpnum);
+}//end void NR::DISTcod
+
+//deriveEigVecとペアで組み合わせて用いる。
+void JT::tappingForUnstable(Vec_IO_DP& EigDispvec,DP eigval,DP EPS,DP R,DP disp_ratio)
+{
+  int N=EigDispvec.size();
+  DP DISP;
+  if(disp_ratio<0.0 || disp_ratio>1.0)
+    disp_ratio=0.01; //default値は半径の1%ランダム変位させる.
+  DISP=R*disp_ratio;
+  srand((unsigned)time(NULL));
+  if(eigval>-EPS) {
+    cerr<<"ERROR for tapping method..."<<endl;
+    exit(1);
+  }
+  if(rand()%2==1)
+    DISP*=-1.0;
+  for(int i=0;i<N;i++)
+    EigDispvec[i]*=DISP;
+}
+
+void JT::noise(Vec_IO_DP& p,DP R,DP Len,DP n_disp_ratio)
+{
+  int N=p.size();
+  DP DISP;
+  MT::init_genrand((unsigned)time(NULL));
+  if(n_disp_ratio<0.0 || n_disp_ratio>1.0)
+    n_disp_ratio=0.01; //default値は半径の1%ランダム変位させる.
+  DISP=R*n_disp_ratio;
+  for(int i=0;i<N;i++) {
+      if(MT::genrand_real2()<0.5)
+	p[i]+=DISP;
+      else
+	p[i]-=DISP;
+  }
+  PeriodicMove(p,Len);
+}
+void JT::dim2::noise(Vec_IO_DP& p,DP R,DP Lx,DP Ly,DP n_disp_ratio)
+{
+  int N=p.size();
+  DP DISP;
+  MT::init_genrand((unsigned)time(NULL));
+  if(n_disp_ratio<0.0 || n_disp_ratio>1.0)
+    n_disp_ratio=0.01; //default値は半径の1%ランダム変位させる.
+  DISP=R*n_disp_ratio;
+  for(int i=0;i<N;i++) {
+      if(MT::genrand_real2()<0.5)
+	p[i]+=DISP;
+      else
+	p[i]-=DISP;
+  }
+  PeriodicMove2D(p,Lx,Ly);
+}
+void JT::dim3::noise(Vec_IO_DP& p,DP R,DP Lx,DP Ly,DP Lz,DP n_disp_ratio)
+{
+  int N=p.size();
+  DP DISP;
+  MT::init_genrand((unsigned)time(NULL));
+  if(n_disp_ratio<0.0 || n_disp_ratio>1.0)
+    n_disp_ratio=0.01; //default値は半径の1%ランダム変位させる.
+  DISP=R*n_disp_ratio;
+  for(int i=0;i<N;i++) {
+      if(MT::genrand_real2()<0.5)
+	p[i]+=DISP;
+      else
+	p[i]-=DISP;
+  }
+  PeriodicMove3D(p,Lx,Ly,Lz);
+}
+/*
+void JT::dim2::searchSoftMode(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly)//num_E=0~3*N-1, num_p = 0~N-1
+{
+  int dn=p.size();
+  int n=dn/D;
+  if(num_E<0 || num_E>dn-1) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  Vec_DP Ev(dn);
+  double e_mag,e_max=0.0,e_threshold,inner_p;
+  int group=1,count;
+  vector<int> NN,NN2,NN3,NN_list;
+  //vector<vector<int> > NNset;
+  vector<int> SoftGroup(n),SoftGroup2(n),SoftCluster(n),exclusionList,exclusionList2,exclusionList2_init,searchedList,clasifiedList;
+  vector<NNset> NN_root;
+  bool detectedSoftCluster,searchedSoftCluster;
+  ofstream ofs("test.txt");
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    SoftCluster[i]=0;
+    for(int j=0;j<D;j++) {
+      Ev[D*i+j]=Em[D*i+j][num_E];
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_max<e_mag) {
+      e_max=e_mag;
+    }
+  }
+  e_threshold=e_max*0.001;
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    for(int j=0;j<D;j++) {
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_mag<=e_threshold) {
+      exclusionList2_init.push_back(i);
+    }
+  }
+  
+  for(int i=0;i<n;i++) {
+    //既にgrouping処理が施されていれば下記の処理をしない.
+    //固有ベクターの成分を閾値以上もっている粒子を特定.
+    //それぞれについてソフトモード解析.
+    if(!isExcludedParticle(i,exclusionList2_init) && !isSearchedParticle(i,clasifiedList)) {
+      //if(!isExcludedParticle(i,exclusionList2_init) && Softmodeに割り振られてない粒子) {
+      exclusionList2=exclusionList2_init;
+      detectedSoftCluster=false;
+      searchedSoftCluster=false;
+      JT::dim2::searchNN(p,i,D,R,rt,Prt1,Prt2,Lx,Ly,NN_root,exclusionList2);//NNを調べる.
+      //NNset=vector<vector<int> >();
+      //NNset.push_back(NN);
+      searchedList=vector<int>();
+      searchedList.push_back(i);
+      count=0;
+      while(!searchedSoftCluster) {
+	if(NN_root.size()==0) {
+	  cout<<"探索する粒子がおらんです."<<endl;
+	  break;
+	}
+	else {
+	  NN=vector<int>();
+	  while(NN_root.size()!=0) {
+	    NN_list=vector<int>();
+	    for(unsigned int m=1;m<NN_root.size();m++) {//なぜ0からではないのか.
+	      NN_list.push_back(NN_root[m].child);
+	    }
+	    bool B1=!isExcludedParticle(NN_root[0].child,exclusionList2);
+	    if(B1) {
+	      inner_p=0.0;
+	      for(int l=0;l<D;l++)
+		inner_p+=Ev[D*NN_root[0].parent+l]*Ev[D*(NN_root[0].child)+l];//<-こいつ即修正.
+	      if(inner_p>0) {
+		//次の探索リストとする。
+		//もし既にサーチした粒子indexならば追加しない.
+		bool B2=!isSearchedParticle(NN_root[0].child,searchedList);
+		bool B3=!isSearchedParticle(NN_root[0].child,NN_list);//重複して追加することを避けるため.
+		//<-それはsearchedListに既に追加しているので、問題ないのでは??
+		bool B4=!isSearchedParticle(NN_root[0].child,NN);//NNに既に入れている場合はスルーする.
+		if(B2 && B3 && B4) {
+		  NN.push_back(NN_root[0].child);//次の探索候補として追加.
+		  searchedList.push_back(NN_root[0].child);//探索済みに変更
+		}
+		else if(!B2)
+		  detectedSoftCluster=true;//i以外の探索済み粒子だったらなにもしない.
+		//いやi以外でも(むしろ、のほうが)SoftClusterに分類されるでしょ.
+		//いるか?この条件
+	      }
+	      else {
+		//<---　要訂正箇所　--->
+		if(!isSearchedParticle(NN_root[0].child,NN_list)) //<-複数回調査する可能性があるので.  <-別に良くない???
+		  exclusionList2.push_back(NN_root[0].child);//内積負のやつは除外.
+	      }
+	    }
+	    else {
+	      //cout<<"他の同階層NN[]によって探索されているようです."<<endl;
+	      cerr<<"ぷろぐらむえらー(exclusionListに入ってる粒子がNNにいるお)"<<endl;
+	      exit(1);
+	    }
+	    NN_root.erase(NN_root.begin());//NN_rootから現在の探索粒子を除外する操作,
+	  }//while(NN_root.size()!=0)-loop
+	  if(NN.size()==0) {
+	    cout<<"探索終了"<<endl;
+	    searchedSoftCluster=true;
+	    break;
+	    //cout<<nn_floar<<"のいっこ階層前にもどる."<<endl;
+	    //NNset.pop_back();//
+	    //nn_floar-=1;
+	  }
+	  else {
+	    NN_root=vector<NNset>();
+	    for(unsigned int k=0;k<NN.size();k++) {
+	      NN2=vector<int>();
+	      JT::dim2::searchNN(p,NN[k],D,R,rt,Prt1,Prt2,Lx,Ly,NN2,exclusionList2);
+	      //NN2[k]のそれぞれについて,excludedを除いたNNを調べる.
+	      //もしそれらのNNでsearchListに引っかかるものがあれば,SoftClusterとして入れちゃう.
+	      //なければ次のwhileループに用いる.
+	      //searchList.push_back(NN2[k]);
+	      for(unsigned int l=0;l<NN2.size();l++) {
+		  NNset tmp={NN2[l],NN[k]};
+		  NN_root.push_back(tmp);
+	      }
+	    }
+	    cout<<endl;
+	  }
+	}//NN_root.size()!=0 - loop
+	count+=1;
+	cout<<count<<"階層目の探索が終わったよ!"<<endl;
+      }//while !searchedCluster -loop
+	////内積とって正のものをリスティング,
+	////どれか1つ選んで、もう一度NNを調べる...を繰り返す.
+	////元の粒子に戻ってきたらソフトモードクラスターとみなす.<- groupingかぶるか否かのチェック.
+	////戻ってこなかったらどん米.
+      if(detectedSoftCluster==true && searchedList.size()){// >= fabs(D+1)) {
+	//SearchedListに入ってる粒子全てをSoftClusterへ追加する.
+	if(searchedList.size()==1) {
+	  SoftCluster[searchedList[0]]=-1;
+	  clasifiedList.push_back(searchedList[0]);
+	}
+	else {
+	  for(unsigned int j=0;j<searchedList.size();j++) {
+	    for(int k=0;k<n;k++) {
+	      if(k==searchedList[j]) {
+		SoftCluster[k]=group;
+		clasifiedList.push_back(k);
+		break;
+	      }
+	    }
+	    cout<<group<<endl;
+	  }
+	  group+=1;
+	}
+      }
+    }//if-固有値の大きさがthreshold以上-end
+    else {
+      cout<<i<<"番目の粒子はソフトモード解析から除外されました."<<endl;
+    }
+  }
+  cout<<"soft mode解析終了."<<endl;
+  //書き込み.
+  for(int i=0;i<n;i++) {
+    if(SoftCluster[i]!=0) {
+      cout<<i<<"番目の粒子は"<<SoftCluster[i]<<"のソフトクラスターに配属!^^"<<endl;
+    }
+    else {
+      cout<<i<<"番目の粒子はソフトクラスターに配属されませんでした><"<<endl;
+    }
+    ofs<<i<<" "<<SoftCluster[i]<<endl;
+  }
+}
+*/
+void JT::dim2::searchCoCluster(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,int &Ncluster)//num_E=0~3*N-1, num_p = 0~N-1
+{
+  int dn=p.size();
+  int n=dn/D;
+  if(num_E<0 || num_E>dn-1) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  Vec_DP Ev(dn);
+  double e_mag,e_max=0.0,e_threshold,inner_p;
+  int group=1,count;
+  vector<int> NN,NN2,NN3,AddedSList;
+  //vector<vector<int> > NNset;
+  vector<int> att(n),exclusionList,exclusionList2,exclusionList2_init,searchedList,clasifiedList;
+  vector<NNset> NN_root;
+  bool detectedSoftCluster,searchedSoftCluster;
+  ofstream ofs("test.txt");
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    att[i]=0;
+    for(int j=0;j<D;j++) {
+      Ev[D*i+j]=Em[D*i+j][num_E];
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_max<e_mag) {
+      e_max=e_mag;
+    }
+  }
+  e_threshold=e_max*0.001;
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    for(int j=0;j<D;j++) {
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_mag<=e_threshold) {
+      exclusionList2_init.push_back(i);
+    }
+  }
+  
+  for(int i=0;i<n;i++) {
+    //既にgrouping処理が施されていれば下記の処理をしない.
+    //固有ベクターの成分を閾値以上もっている粒子を特定.
+    //それぞれについてソフトモード解析.
+    if(!isExcludedParticle(i,exclusionList2_init) && !isSearchedParticle(i,clasifiedList)) {
+      //if(!isExcludedParticle(i,exclusionList2_init) && Softmodeに割り振られてない粒子) {
+      exclusionList2=exclusionList2_init;
+      detectedSoftCluster=false;
+      searchedSoftCluster=false;
+      JT::dim2::searchNN(p,i,D,R,rt,Prt1,Prt2,Lx,Ly,NN_root,exclusionList2);//NNを調べる.
+      //NNset=vector<vector<int> >();
+      //NNset.push_back(NN);
+      searchedList=vector<int>();
+      searchedList.push_back(i);
+      count=0;
+      while(!searchedSoftCluster) {
+	if(NN_root.size()==0) {
+	  cout<<"探索する粒子がおらんです."<<endl;
+	  break;
+	}
+	else {
+	  NN=vector<int>();
+	  while(NN_root.size()!=0) {
+	    AddedSList=vector<int>();
+
+	    bool B1=!isExcludedParticle(NN_root[0].child,exclusionList2);
+	    bool B2=!isSearchedParticle(NN_root[0].child,searchedList);
+	    if(B1 && B2) {
+	      inner_p=0.0;
+	      for(int l=0;l<D;l++)
+		inner_p+=Ev[D*NN_root[0].parent+l]*Ev[D*(NN_root[0].child)+l];//<-こいつ即修正.
+	      if(inner_p>0) {
+		//次の探索リストとする。
+		//もし既にサーチした粒子indexならば追加しない.
+		
+		//<-それはsearchedListに既に追加しているので、問題ないのでは??
+		//bool B4=!isSearchedParticle(NN_root[0].child,NN);//NNに既に入れている場合はスルーする.
+		  NN.push_back(NN_root[0].child);//次の探索候補として追加.
+		  searchedList.push_back(NN_root[0].child);//探索済みに変更
+		//else if(!B2)
+		  //detectedSoftCluster=true;//i以外の探索済み粒子だったらなにもしない.
+		//いやi以外でも(むしろ、のほうが)SoftClusterに分類されるでしょ.
+		//いるか?この条件
+	      }
+	      else {
+		//<---　要訂正箇所　--->
+		//if(!isSearchedParticle(NN_root[0].child,NN_list)) //<-複数回調査する可能性があるので.  <-別に良くない???
+		  //exclusionList2.push_back(NN_root[0].child);//内積負のやつは除外.
+	      }
+	    }
+	    else {
+	      //cout<<"他の同階層NN[]によって探索されているようです."<<endl;
+	      //cerr<<"ぷろぐらむえらー(exclusionListに入ってる粒子がNNにいるお)"<<endl;
+	      //exit(1);
+	    }
+	    NN_root.erase(NN_root.begin());//NN_rootから現在の探索粒子を除外する操作,
+	  }//while(NN_root.size()!=0)-loop
+	  if(NN.size()==0) {
+	    cout<<"探索終了"<<endl;
+	    searchedSoftCluster=true;
+	    break;
+	    //cout<<nn_floar<<"のいっこ階層前にもどる."<<endl;
+	    //NNset.pop_back();//
+	    //nn_floar-=1;
+	  }
+	  else {
+	    NN_root=vector<NNset>();
+	    for(unsigned int k=0;k<NN.size();k++) {
+	      NN2=vector<int>();
+	      JT::dim2::searchNN(p,NN[k],D,R,rt,Prt1,Prt2,Lx,Ly,NN2,exclusionList2);
+	      //NN2[k]のそれぞれについて,excludedを除いたNNを調べる.
+	      //もしそれらのNNでsearchListに引っかかるものがあれば,SoftClusterとして入れちゃう.
+	      //なければ次のwhileループに用いる.
+	      //searchList.push_back(NN2[k]);
+	      for(unsigned int l=0;l<NN2.size();l++) {
+		  NNset tmp={NN2[l],NN[k]};
+		  NN_root.push_back(tmp);
+	      }
+	    }
+	    cout<<endl;
+	  }
+	}//NN_root.size()!=0 - loop
+	count+=1;
+	cout<<count<<"階層目の探索が終わったよ!"<<endl;
+      }//while !searchedCluster -loop
+	////内積とって正のものをリスティング,
+	////どれか1つ選んで、もう一度NNを調べる...を繰り返す.
+	////元の粒子に戻ってきたらソフトモードクラスターとみなす.<- groupingかぶるか否かのチェック.
+	////戻ってこなかったらどん米.
+      if(searchedList.size() == 1) {
+	att[searchedList[0]]=-1;
+	clasifiedList.push_back(searchedList[0]);
+      }
+      else {
+	//Searchedlistに入ってる粒子全てをSoftClusterへ追加する.
+	for(unsigned int j=0;j<searchedList.size();j++) {
+	  for(int k=0;k<n;k++) {
+	    if(k==searchedList[j]) {
+	      if(isSearchedParticle(k,clasifiedList)) {
+		cerr<<"既に共振動クラスターに配属されています."<<endl;
+		exit(1);
+	      }
+	      att[k]=group;
+	      clasifiedList.push_back(k);
+	      break;
+	    }
+	  }
+	  cout<<group<<endl;
+	}
+	group+=1;
+      }
+    }//if-固有値の大きさがthreshold以上-end
+    else {
+      cout<<i<<"番目の粒子はソフトモード解析から除外されました."<<endl;
+    }
+  }
+  cout<<"soft mode解析終了."<<endl;
+  Ncluster=group-1;
+  //書き込み.
+  for(int i=0;i<n;i++) {
+    if(att[i]!=0) {
+      cout<<i<<"番目の粒子は"<<att[i]<<"のソフトクラスターに配属!^^"<<endl;
+    }
+    else {
+      cout<<i<<"番目の粒子はソフトクラスターに配属されませんでした><"<<endl;
+    }
+    ofs<<i<<" "<<att[i]<<endl;
+  }
+}
+void JT::dim2::searchCoCluster_qt(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,Vec_IO_INT &att,int &Ncluster)//num_E=0~3*N-1, num_p = 0~N-1
+{
+  int dn=p.size();
+  int n=dn/D;
+  if(num_E<0 || num_E>dn-1) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  if(n!=att.size()) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  Vec_DP Ev(dn);
+  double e_mag,e_max=0.0,e_threshold,inner_p;
+  int group=1,count;
+  vector<int> NN,NN2,NN3,AddedSList;
+  //vector<vector<int> > NNset;
+  vector<int> exclusionList,exclusionList2,exclusionList2_init,searchedList,clasifiedList;
+  vector<NNset> NN_root;
+  bool detectedSoftCluster,searchedSoftCluster;
+  ofstream ofs("test.txt");
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    att[i]=0;
+    for(int j=0;j<D;j++) {
+      Ev[D*i+j]=Em[D*i+j][num_E];
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_max<e_mag) {
+      e_max=e_mag;
+    }
+  }
+  e_threshold=e_max*0.05;
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    for(int j=0;j<D;j++) {
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_mag<=e_threshold) {
+      exclusionList2_init.push_back(i);
+    }
+  }
+  
+  for(int i=0;i<n;i++) {
+    //既にgrouping処理が施されていれば下記の処理をしない.
+    //固有ベクターの成分を閾値以上もっている粒子を特定.
+    //それぞれについてソフトモード解析.
+    if(!isExcludedParticle(i,exclusionList2_init) && !isSearchedParticle(i,clasifiedList)) {
+      //if(!isExcludedParticle(i,exclusionList2_init) && Softmodeに割り振られてない粒子) {
+      exclusionList2=exclusionList2_init;
+      detectedSoftCluster=false;
+      searchedSoftCluster=false;
+      JT::dim2::searchNN(p,i,D,R,rt,Prt1,Prt2,Lx,Ly,NN_root,exclusionList2);//NNを調べる.
+      //NNset=vector<vector<int> >();
+      //NNset.push_back(NN);
+      searchedList=vector<int>();
+      searchedList.push_back(i);
+      count=0;
+      while(!searchedSoftCluster) {
+	if(NN_root.size()==0) {
+	  cout<<"探索する粒子がおらんです."<<endl;
+	  break;
+	}
+	else {
+	  NN=vector<int>();
+	  while(NN_root.size()!=0) {
+	    AddedSList=vector<int>();
+
+	    bool B1=!isExcludedParticle(NN_root[0].child,exclusionList2);
+	    bool B2=!isSearchedParticle(NN_root[0].child,searchedList);
+	    if(B1 && B2) {
+	      inner_p=0.0;
+	      for(int l=0;l<D;l++)
+		inner_p+=Ev[D*NN_root[0].parent+l]*Ev[D*(NN_root[0].child)+l];//<-こいつ即修正.
+	      if(inner_p>0) {
+		//次の探索リストとする。
+		//もし既にサーチした粒子indexならば追加しない.
+		
+		//<-それはsearchedListに既に追加しているので、問題ないのでは??
+		//bool B4=!isSearchedParticle(NN_root[0].child,NN);//NNに既に入れている場合はスルーする.
+		  NN.push_back(NN_root[0].child);//次の探索候補として追加.
+		  searchedList.push_back(NN_root[0].child);//探索済みに変更
+		//else if(!B2)
+		  //detectedSoftCluster=true;//i以外の探索済み粒子だったらなにもしない.
+		//いやi以外でも(むしろ、のほうが)SoftClusterに分類されるでしょ.
+		//いるか?この条件
+	      }
+	      else {
+		//<---　要訂正箇所　--->
+		//if(!isSearchedParticle(NN_root[0].child,NN_list)) //<-複数回調査する可能性があるので.  <-別に良くない???
+		  //exclusionList2.push_back(NN_root[0].child);//内積負のやつは除外.
+	      }
+	    }
+	    else {
+	      //cout<<"他の同階層NN[]によって探索されているようです."<<endl;
+	      //cerr<<"ぷろぐらむえらー(exclusionListに入ってる粒子がNNにいるお)"<<endl;
+	      //exit(1);
+	    }
+	    NN_root.erase(NN_root.begin());//NN_rootから現在の探索粒子を除外する操作,
+	  }//while(NN_root.size()!=0)-loop
+	  if(NN.size()==0) {
+	    cout<<"探索終了"<<endl;
+	    searchedSoftCluster=true;
+	    break;
+	    //cout<<nn_floar<<"のいっこ階層前にもどる."<<endl;
+	    //NNset.pop_back();//
+	    //nn_floar-=1;
+	  }
+	  else {
+	    NN_root=vector<NNset>();
+	    for(unsigned int k=0;k<NN.size();k++) {
+	      NN2=vector<int>();
+	      JT::dim2::searchNN(p,NN[k],D,R,rt,Prt1,Prt2,Lx,Ly,NN2,exclusionList2);
+	      //NN2[k]のそれぞれについて,excludedを除いたNNを調べる.
+	      //もしそれらのNNでsearchListに引っかかるものがあれば,SoftClusterとして入れちゃう.
+	      //なければ次のwhileループに用いる.
+	      //searchList.push_back(NN2[k]);
+	      for(unsigned int l=0;l<NN2.size();l++) {
+		  NNset tmp={NN2[l],NN[k]};
+		  NN_root.push_back(tmp);
+	      }
+	    }
+	    cout<<endl;
+	  }
+	}//NN_root.size()!=0 - loop
+	count+=1;
+	cout<<count<<"階層目の探索が終わったよ!"<<endl;
+      }//while !searchedCluster -loop
+	////内積とって正のものをリスティング,
+	////どれか1つ選んで、もう一度NNを調べる...を繰り返す.
+	////元の粒子に戻ってきたらソフトモードクラスターとみなす.<- groupingかぶるか否かのチェック.
+	////戻ってこなかったらどん米.
+      if(searchedList.size() == 1) {
+	att[searchedList[0]]=-1;
+	clasifiedList.push_back(searchedList[0]);
+      }
+      else {
+	//SearchedListに入ってる粒子全てをSoftClusterへ追加する.
+	for(unsigned int j=0;j<searchedList.size();j++) {
+	  for(int k=0;k<n;k++) {
+	    if(k==searchedList[j]) {
+	      if(isSearchedParticle(k,clasifiedList)) {
+		cerr<<"既に共振動クラスターに配属されています."<<endl;
+		exit(1);
+	      }
+	      att[k]=group;
+	      clasifiedList.push_back(k);
+	      break;
+	    }
+	  }
+	  cout<<group<<endl;
+	}
+	group+=1;
+      }
+    }//if-固有値の大きさがthreshold以上-end
+    else {
+      cout<<i<<"番目の粒子はソフトモード解析から除外されました."<<endl;
+    }
+  }
+  cout<<"soft mode解析終了."<<endl;
+  Ncluster=group-1;
+  //書き込み.
+  for(int i=0;i<n;i++) {
+    if(att[i]!=0) {
+      cout<<i<<"番目の粒子は"<<att[i]<<"のソフトクラスターに配属!^^"<<endl;
+    }
+    else {
+      cout<<i<<"番目の粒子はソフトクラスターに配属されませんでした><"<<endl;
+    }
+    ofs<<i<<" "<<att[i]<<endl;
+  }
+}
+/*
+void JT::dim3::searchSoftMode(Vec_I_DP &p,Mat_I_DP &Em,int num_E,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz)//num_E=0~3*N-1, num_p = 0~N-1
+{
+  int dn=p.size();
+  int n=dn/D;
+  if(num_E<0 || num_E>dn-1) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  Vec_DP Ev(dn);
+  double e_mag,e_max=0.0,e_threshold,inner_p;
+  int group=1,count;
+  vector<int> NN,NN2,NN3,NN_list;
+  //vector<vector<int> > NNset;
+  vector<int> SoftGroup(n),SoftGroup2(n),SoftCluster(n),exclusionList,exclusionList2,exclusionList2_init,searchedList,clasifiedList;
+  vector<NNset> NN_root;
+  bool detectedSoftCluster,searchedSoftCluster;
+  ofstream ofs("test.txt");
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    SoftCluster[i]=0;
+    for(int j=0;j<D;j++) {
+      Ev[D*i+j]=Em[D*i+j][num_E];
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_max<e_mag) {
+      e_max=e_mag;
+    }
+  }
+  e_threshold=e_max*0.05;
+  for(int i=0;i<n;i++) {
+    e_mag=0.0;
+    for(int j=0;j<D;j++) {
+      e_mag+=Ev[D*i+j]*Ev[D*i+j];
+    }
+    if(e_mag<=e_threshold) {
+      exclusionList2_init.push_back(i);
+    }
+  }
+  
+  for(int i=0;i<n;i++) {
+    //既にgrouping処理が施されていれば下記の処理をしない.
+    //固有ベクターの成分を閾値以上もっている粒子を特定.
+    //それぞれについてソフトモード解析.
+    if(!isExcludedParticle(i,exclusionList2_init) && !isSearchedParticle(i,clasifiedList)) {
+      //if(!isExcludedParticle(i,exclusionList2_init) && Softmodeに割り振られてない粒子) {
+      exclusionList2=exclusionList2_init;
+      detectedSoftCluster=false;
+      searchedSoftCluster=false;
+      JT::dim3::searchNN(p,i,D,R,rt,Prt1,Prt2,Lx,Ly,Lz,NN_root,exclusionList2);//NNを調べる.
+      //NNset=vector<vector<int> >();
+      //NNset.push_back(NN);
+      searchedList=vector<int>();
+      searchedList.push_back(i);
+      count=0;
+      while(!searchedSoftCluster) {
+	if(NN_root.size()==0) {
+	  cout<<"探索する粒子がおらんです."<<endl;
+	  break;
+	}
+	else {
+	  NN=vector<int>();
+	  while(NN_root.size()!=0) {
+	    NN_list=vector<int>();
+	    for(unsigned int m=1;m<NN_root.size();m++) {
+	      NN_list.push_back(NN_root[m].child);
+	    }
+	    bool B1=!isExcludedParticle(NN_root[0].child,exclusionList2);
+	    if(B1) {
+	      inner_p=0.0;
+	      for(int l=0;l<D;l++)
+		inner_p+=Ev[D*NN_root[0].parent+l]*Ev[D*(NN_root[0].child)+l];//<-こいつ即修正.
+	      if(inner_p>0) {
+		//次の探索リストとする。
+		//もし既にサーチした粒子indexならば追加しない.
+		bool B2=!isSearchedParticle(NN_root[0].child,searchedList);
+		bool B3=!isSearchedParticle(NN_root[0].child,NN_list);//重複して追加することを避けるため.
+		bool B4=!isSearchedParticle(NN_root[0].child,NN);//NNに既に入れている場合はスルーする.
+		if(B2 && B3 && B4) {
+		  NN.push_back(NN_root[0].child);//次の探索候補として追加.
+		  searchedList.push_back(NN_root[0].child);
+		}
+		else if(!B2)
+		  detectedSoftCluster=true;//i以外の探索済み粒子だったらなにもしない.
+		//いやi以外でも(むしろ、のほうが)SoftClusterに分類されるでしょ.
+	      }
+	      else {
+		//<---　要訂正箇所　--->
+		if(!isSearchedParticle(NN_root[0].child,NN_list)) //<-複数回調査する可能性があるので.
+		  exclusionList2.push_back(NN_root[0].child);//内積負のやつは除外.
+	      }
+	    }
+	    else {
+	      //cout<<"他の同階層NN[]によって探索されているようです."<<endl;
+	      cerr<<"ぷろぐらむえらー(exclusionListに入ってる粒子がNNにいるお)"<<endl;
+	      exit(1);
+	    }
+	    NN_root.erase(NN_root.begin());//NN_rootから現在の探索粒子を除外する操作,
+	  }//while(NN_root.size()!=0)-loop
+	  if(NN.size()==0) {
+	    cout<<"探索終了"<<endl;
+	    searchedSoftCluster=true;
+	    break;
+	    //cout<<nn_floar<<"のいっこ階層前にもどる."<<endl;
+	    //NNset.pop_back();//
+	    //nn_floar-=1;
+	  }
+	  else {
+	    NN_root=vector<NNset>();
+	    for(unsigned int k=0;k<NN.size();k++) {
+	      NN2=vector<int>();
+	      JT::dim3::searchNN(p,NN[k],D,R,rt,Prt1,Prt2,Lx,Ly,Lz,NN2,exclusionList2);
+	      //NN2[k]のそれぞれについて,excludedを除いたNNを調べる.
+	      //もしそれらのNNでsearchListに引っかかるものがあれば,SoftClusterとして入れちゃう.
+	      //なければ次のwhileループに用いる.
+	      //searchList.push_back(NN2[k]);
+	      for(unsigned int l=0;l<NN2.size();l++) {
+		  NNset tmp={NN2[l],NN[k]};
+		  NN_root.push_back(tmp);
+	      }
+	    }
+	    cout<<endl;
+	  }
+	}//NN_root.size()!=0 - loop
+	count+=1;
+	cout<<count<<"階層目の探索が終わったよ!"<<endl;
+      }//while !searchedCluster -loop
+	////内積とって正のものをリスティング,
+	////どれか1つ選んで、もう一度NNを調べる...を繰り返す.
+	////元の粒子に戻ってきたらソフトモードクラスターとみなす.<- groupingかぶるか否かのチェック.
+	////戻ってこなかったらどん米.
+      if(detectedSoftCluster==true && searchedList.size() >= fabs(D+1)) {
+	//SearchedListに入ってる粒子全てをSoftClusterへ追加する.
+	for(unsigned int j=0;j<searchedList.size();j++) {
+	  for(int k=0;k<n;k++) {
+	    if(k==searchedList[j]) {
+	      SoftCluster[k]=group;
+	      clasifiedList.push_back(k);
+	      break;
+	    }
+	  }
+	  cout<<group<<endl;
+	}
+	group+=1;
+      }
+    }//if-固有値の大きさがthreshold以上-end
+    else {
+      cout<<i<<"番目の粒子はソフトモード解析から除外されました."<<endl;
+    }
+  }
+  cout<<"soft mode解析終了."<<endl;
+  //書き込み.
+  for(int i=0;i<n;i++) {
+    if(SoftCluster[i]!=0) {
+      cout<<i<<"番目の粒子は"<<SoftCluster[i]<<"のソフトクラスターに配属!^^"<<endl;
+    }
+    else {
+      cout<<i<<"番目の粒子はソフトクラスターに配属されませんでした><"<<endl;
+    }
+    ofs<<i<<" "<<SoftCluster[i]<<endl;
+  }
+}
+*/
+void JT::dim2::searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,vector<int> &NN,int num_p_pre)
+{
+  int n=p.size()/D;
+  DP relr[3];
+  if(num_p<0 || num_p>n) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  double distance,rad=R,rad_p,sgm,r2;
+  NN=vector<int>();
+  if((Prt1+Prt2)*num_p < Prt1*n) {
+    rad_p=R;
+  }
+  else {
+    rad_p=R*rt;
+  }
+  for(int i=0;i<n;i++) {
+    if(i!=num_p && i!=num_p_pre) {
+      if((Prt1+Prt2)*i>=Prt1*n) {
+	rad=R*rt;
+      }
+      sgm=rad_p+rad;
+      for(int j=0;j<D;j++) {
+	relr[j]=p[D*num_p+j]-p[D*i+j];
+      }
+      JT::dim2::OutofPeriodicboundary2D(relr[0],relr[1],Lx,Ly,sgm);
+      distance=0.0;
+      for(int j=0;j<D;j++) {
+	distance+=relr[j]*relr[j];
+      }
+      r2=sgm*sgm;
+      if(distance < r2) {
+	NN.push_back(i);
+      }
+    }
+  }
+  return;
+}
+void JT::dim3::searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz,vector<int> &NN,int num_p_pre)
+{
+  int n=p.size()/D;
+  DP relr[3];
+  if(num_p<0 || num_p>n) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  double distance,rad=R,rad_p,sgm,r2;
+  NN=vector<int>();
+  if((Prt1+Prt2)*num_p < Prt1*n) {
+    rad_p=R;
+  }
+  else {
+    rad_p=R*rt;
+  }
+  for(int i=0;i<n;i++) {
+    if(i!=num_p && i!=num_p_pre) {
+      if((Prt1+Prt2)*i>=Prt1*n) {
+	rad=R*rt;
+      }
+      sgm=rad_p+rad;
+      for(int j=0;j<D;j++) {
+	relr[j]=p[D*num_p+j]-p[D*i+j];
+      }
+      JT::dim3::OutofPeriodicboundary3D(relr[0],relr[1],relr[2],Lx,Ly,Lz,sgm);
+      distance=0.0;
+      for(int j=0;j<D;j++) {
+	distance+=relr[j]*relr[j];
+      }
+      r2=sgm*sgm;
+      if(distance < r2) {
+	NN.push_back(i);
+      }
+    }
+  }
+  return;
+}
+
+//<-- 訂正 -->周期境界かける!!
+void JT::dim2::searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,vector<int> &NN,vector<int> exList)
+{
+  int n=p.size()/D;
+  DP relr[3];
+  if(num_p<0 || num_p>n) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  double distance,rad=R,rad_p,sgm,r2;
+  NN=vector<int>();
+  if((Prt1+Prt2)*num_p < Prt1*n) {
+    rad_p=R;
+  }
+  else {
+    rad_p=R*rt;
+  }
+  for(int i=0;i<n;i++) {
+    if(i!=num_p && !isExcludedParticle(i,exList)) {
+      if((Prt1+Prt2)*i>=Prt1*n) {
+	rad=R*rt;
+      }
+      sgm=rad_p+rad;
+      for(int j=0;j<D;j++) {
+	relr[j]=p[D*num_p+j]-p[D*i+j];
+      }
+      JT::dim2::OutofPeriodicboundary2D(relr[0],relr[1],Lx,Ly,sgm);
+      distance=0.0;
+      for(int j=0;j<D;j++) {
+	distance+=relr[j]*relr[j];
+      }
+      r2=sgm*sgm;
+      if(distance < r2) {
+	NN.push_back(i);
+      }
+    }
+  }
+  return;
+}
+void JT::dim3::searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz,vector<int> &NN,vector<int> exList)
+{
+  int n=p.size()/D;
+  DP relr[3];
+  if(num_p<0 || num_p>n) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  double distance,rad=R,rad_p,sgm,r2;
+  NN=vector<int>();
+  if((Prt1+Prt2)*num_p < Prt1*n) {
+    rad_p=R;
+  }
+  else {
+    rad_p=R*rt;
+  }
+  for(int i=0;i<n;i++) {
+    if(i!=num_p && !isExcludedParticle(i,exList)) {
+      if((Prt1+Prt2)*i>=Prt1*n) {
+	rad=R*rt;
+      }
+      sgm=rad_p+rad;
+      for(int j=0;j<D;j++) {
+	relr[j]=p[D*num_p+j]-p[D*i+j];
+      }
+      JT::dim3::OutofPeriodicboundary3D(relr[0],relr[1],relr[2],Lx,Ly,Lz,sgm);
+      distance=0.0;
+      for(int j=0;j<D;j++) {
+	distance+=relr[j]*relr[j];
+      }
+      r2=sgm*sgm;
+      if(distance < r2) {
+	NN.push_back(i);
+      }
+    }
+  }
+  return;
+}
+
+//<-- 訂正 -->周期境界かける!!
+void JT::dim2::searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,vector<NNset> &NN,vector<int> exList)
+{
+int n=p.size()/D;
+  DP relr[3];
+  if(num_p<0 || num_p>n) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  double distance,rad=R,rad_p,sgm,r2;
+  NN=vector<NNset>();
+  if((Prt1+Prt2)*num_p < Prt1*n) {
+    rad_p=R;
+  }
+  else {
+    rad_p=R*rt;
+  }
+  for(int i=0;i<n;i++) {
+    if(i!=num_p && !isExcludedParticle(i,exList)) {
+      if((Prt1+Prt2)*i>=Prt1*n) {
+	rad=R*rt;
+      }
+      sgm=rad_p+rad;
+      for(int j=0;j<D;j++) {
+	relr[j]=p[D*num_p+j]-p[D*i+j];
+      }
+      JT::dim2::OutofPeriodicboundary2D(relr[0],relr[1],Lx,Ly,sgm);
+      distance=0.0;
+      for(int j=0;j<D;j++) {
+	distance+=relr[j]*relr[j];
+      }
+      r2=sgm*sgm;
+      if(distance < r2) {
+	NNset tmp={i,num_p};
+	NN.push_back(tmp);
+      }
+    }
+  }
+  return;
+}
+void JT::dim3::searchNN(Vec_I_DP &p,int num_p,int D,DP R,DP rt,int Prt1,int Prt2,DP Lx,DP Ly,DP Lz,vector<NNset> &NN,vector<int> exList)
+{
+int n=p.size()/D;
+  DP relr[3];
+  if(num_p<0 || num_p>n) {
+    cerr<<""<<endl;
+    exit(1);
+  }
+  double distance,rad=R,rad_p,sgm,r2;
+  NN=vector<NNset>();
+  if((Prt1+Prt2)*num_p < Prt1*n) {
+    rad_p=R;
+  }
+  else {
+    rad_p=R*rt;
+  }
+  for(int i=0;i<n;i++) {
+    if(i!=num_p && !isExcludedParticle(i,exList)) {
+      if((Prt1+Prt2)*i>=Prt1*n) {
+	rad=R*rt;
+      }
+      sgm=rad_p+rad;
+      for(int j=0;j<D;j++) {
+	relr[j]=p[D*num_p+j]-p[D*i+j];
+      }
+      JT::dim3::OutofPeriodicboundary3D(relr[0],relr[1],relr[2],Lx,Ly,Lz,sgm);
+      distance=0.0;
+      for(int j=0;j<D;j++) {
+	distance+=relr[j]*relr[j];
+      }
+      r2=sgm*sgm;
+      if(distance < r2) {
+	NNset tmp={i,num_p};
+	NN.push_back(tmp);
+      }
+    }
+  }
+  return;
+}
+
+bool JT::isExcludedParticle(int num,vector<int> v) {
+  int n=v.size();
+  for(int i=0;i<n;i++) {
+    if(num==v[i])
+      return true;
+  }
+  return false;
+}
+bool JT::isSearchedParticle(int num,vector<int> v) {
+  int n=v.size();
+  for(int i=0;i<n;i++) {
+    if(num==v[i])
+      return true;
+  }
+  return false;
+}
+bool JT::isSearchedParticle(int num,vector<NNset> v) {
+  int n=v.size();
+  for(int i=0;i<n;i++) {
+    if(num==v[i].child)
+      return true;
+  }
+  return false;
+}
+void JT::classifySoftCluster(vector<int> &soft,int groupNum,vector<vector<int> >nnset)
+{
+  int N=nnset.size();
+  int M=soft.size();
+  int count=0;
+  if(nnset[N-1].size()==0) {
+    cerr<<"nnsetの格納おかしい"<<endl;
+    exit(1);
+  }
+  bool searched=false;
+  int fl=N-1,num=nnset[fl][0];
+  while(!searched) {
+    for(int i=0;i<M;i++) {
+      if(i==num) {
+	if(soft[i]!=0 && soft[i]!=groupNum) {
+	  cerr<<"複数のソフトクラスターに属する粒子として判定されました."<<endl;
+	  exit(1);
+	}
+	soft[i]=groupNum;
+	if(fl>0) {
+	  fl-=1;
+	  num=nnset[fl][0];
+	}
+	else {
+	  searched=true;
+	}
+	break;
+      }
+    }
+    count+=1;
+    if(count>100000) {
+      cerr<<"ソフトクラスターメソッドまわしすぎ."<<endl;
+      exit(1);
+    }
+  }
+}
+//void searchSoftCluster()
+
+inline void JT::HessCalc(Mat_IO_DP &H,int i,int j,DP ijF,DP iiF,DP jjF,DP rr)
+{
+  //---x,x同士のHessian成分
+	    H[i][j]=H[j][i]=ijF*rr;
+	    H[i][i]-=iiF*rr;
+	    H[j][j]-=jjF*rr;
+}
+inline void JT::HessCalc(Mat_IO_DP &H,int i1,int i2,int j1,int j2,DP ijF,DP iiF,DP jjF,DP rr)
+{
+	    H[i1][j2]=H[i2][j1]=H[j1][i2]=H[j2][i1]=ijF*rr;
+	    H[i1][i2]=H[i2][i1]-=iiF*rr;
+	    H[j1][j2]=H[j2][j1]-=jjF*rr;
+}
+
+
+DP migrationLengthOnCSpace(Vec_I_DP zahyo,Vec_I_DP zahyotmp)
+{
+  const int N1=zahyo.size(),N2=zahyotmp.size();
+  DP z,sum=0.0,root;
+
+  if(N1!=N2) {
+    cerr<<"cannot calculate migration length for different dimensional vectors"<<endl;
+    exit(1);
+  }
+  else {
+    for(int i=0;i<N1;i++) {
+      z=zahyo[i]-zahyotmp[i];
+      sum+=z*z;
+    }
+    root=sqrt(sum);
+    return root;
+  }
+  return 0.0;
+}
+
+#endif

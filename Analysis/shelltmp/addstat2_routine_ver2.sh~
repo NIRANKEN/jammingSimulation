@@ -1,0 +1,76 @@
+#!/bin/sh
+
+if [ $# -ne 7 ]; then
+    echo "引数は6個宣言してください."
+    echo "引数1: 日付(例: 0510)"
+    echo "引数2: 空間次元(例: 3D)"
+    echo "引数3: 粒子数(例: 256)"
+    echo "引数4: DPHIの開始値(例: 1.0 => 10^(-(1+haba)) ~ 10^(-1))"
+    echo "引数5: DPHIのbin幅(例: 0.5)"
+    xxx=`echo "$4 * $5" | bc -l`
+    echo "引数6: DPHIのbin幅の数(例: 11 => 引4 * 引5 = $xxx )"
+    echo "引数7: Smoothed DOS or not (0=>normal DOS, 1=>smoothed DOS)"
+    exit 1
+fi
+if [ $7 -eq 0 ]; then
+addstr=""
+elif [ $7 -eq 1 ]; then
+addstr="SM_"
+else
+    echo "引数7($7)が不正な値です.(0 or 1)"
+    exit 1
+fi
+echo "CharacteristicFrequency2_"$addstr"EIGEnsAve_BR0.05_"$1"_"$2"BIN"$3".txt $1 BI $3 $2" > sin_addBIN_bi_
+
+haba=$5
+beg_phi=$4
+dir_num=$6
+
+phi_p=$beg_phi
+phi_l=`echo "$phi_p + $haba" | bc -l`
+dir_phi=$phi_l"_"$phi_p
+cp F_cfreq2 $dir_phi
+cp sin_ifreq_bi_ $dir_phi
+cp $add_str"InvariantFreq_mean_"$1"_"$2"BIN"$3".txt" $dir_phi
+cd $dir_phi
+./F_cfreq2 $7 < sin_ifreq_bi_
+cd ../
+for i in `seq 2 $dir_num`
+do
+    phi_p=$phi_l
+    phi_l=`echo "$phi_p + $haba" | bc -l`
+    dir_phi=$phi_l"_"$phi_p
+    cp F_addBIN $dir_phi
+    cp sin_addBIN_bi_ $dir_phi
+    cp $add_str"InvariantFreq_mean_"$1"_"$2"BIN"$3".txt" $dir_phi
+    cd $dir_phi
+    cat "CharacteristicFrequency2_"$addstr"EIGEnsAve_BR0.05_"$1"_"$2"BIN"$3".txt" >> ../$addstr$8
+    ./F_addBIN $7 < sin_addBIN_bi_
+    
+    cd ../
+done
+
+cd 1.5_1
+
+cd ../2_1.5
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../2.5_2
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../3_2.5
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../3.5_3
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../4_3.5
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../4.5_4
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../5_4.5
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../5.5_5
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../6_5.5
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../6.5_6
+./F_addBIN 1 < sin_addBIN_bi_
+cd ../
+

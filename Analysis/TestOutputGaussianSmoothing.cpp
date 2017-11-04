@@ -1,0 +1,209 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdlib>
+#include <cstdio>
+#include <limits>
+#include <cmath>
+#include <vector>
+#include "BIN.h"
+
+using namespace std;
+
+struct DecideBIN
+{
+  double haba;
+  int count;
+};
+struct DOSset
+{
+  double omega;
+  double DOS;
+  bool appl;
+};
+  
+int main(int argc,char** argv)
+{
+  if(argc!=3) {
+    cerr<<"宣言ミス\n1. 平滑化幅(1=>隣のみ,2=>次近接まで), 2.平滑化で用いる底"<<endl;
+    exit(1);
+  }
+  int range=atoi(argv[1]);
+  double tei=atof(argv[2]);
+  double weight[range+1],sum_w=0.0;//weight[0]のぶんを既に足した
+  for(int i=0;i<=range;i++) {
+    weight[i]=pow(tei,range-i);
+    if(i==0)
+      sum_w+=weight[i];
+    else
+      sum_w+=2*weight[i];
+  }
+
+  //int dimension,Particlenum;
+  string dt,disperse,Pnum,dim;
+  string wt,wt2,rd,str;
+  ifstream ifs;
+  ofstream ofs,ofs2;
+  int N;
+
+  binstat::InputStr(dt,disperse,Pnum,dim);
+  //dimension=atoi(dim.c_str());
+  //Particlenum=atoi(Pnum.c_str());
+  rd="EIGEnsAve_BR0.05_"+dt+'_'+dim+disperse+'N'+Pnum+".txt";
+  ifs.open(rd.data());
+  if(ifs.fail()) {
+    cerr<<"catnot open your file: "<<rd<<endl;
+    return 1;
+  }
+  else {
+    wt="Smoothed_"+rd;
+    wt2="SM_"+rd;
+    ofs.open(wt.data());
+    ofs2.open(wt2.data());
+    N=atoi(Pnum.data());
+    cout<<"\n\n\""<<range<<"\"幅で \""<<tei<<"\"の底 を用いて平滑化開始..."<<endl;
+    
+    const int Nd=15;
+    int cnt=0,haba_num;
+    //const double 
+    double data[Nd],omega,omega_tmp,DOS,DOS_tmp,omega_haba,EPS=0.0001,oh_p,oh_l;
+    string line;
+    bool newhaba,validOmega;
+    bool bb[4];
+    vector<DecideBIN> d_bins;
+    vector<DOSset> D_sets;
+
+    while(getline(ifs,line)) {
+      cnt++;
+    }
+    const int C=cnt;
+    cnt=0;
+    ifs.clear();
+    ifs.seekg(0,ios::beg);
+    
+    while(getline(ifs,line)) {
+
+      //input
+      stringstream ss(line);
+      for(int i=0;i<Nd;i++) {
+	ss>>data[i];
+      }
+      omega=data[0];
+      DOS=data[10];
+      DOSset Dset={omega,DOS,false};
+      D_sets.push_back(Dset);
+      
+      if(cnt==0) {
+	//なにもしない.
+      }
+      else {
+	//幅導出処理.
+	omega_haba=log(omega)-log(omega_tmp);
+	// cout<<omega_haba<<endl;
+	newhaba=true;
+	for(unsigned int i=0;i<d_bins.size();i++) {
+	  if(d_bins[i].haba-EPS < omega_haba && d_bins[i].haba+EPS > omega_haba) {
+	    newhaba=false;
+	    haba_num=i;
+	  }
+	}
+	if(newhaba) {
+	  DecideBIN Dbin={omega_haba,0};
+	  d_bins.push_back(Dbin);
+	}
+	else {
+	  d_bins[haba_num].count+=1;
+	}
+      }
+      //
+
+      omega_tmp=omega;
+      DOS_tmp=DOS;
+
+      cnt++;
+    }
+    
+    if(d_bins.size()==0) {
+      cerr<<""<<endl;
+      exit(1);
+    }
+    else {
+      omega_haba=d_bins[0].haba;
+      cnt=d_bins[0].count;
+      for(unsigned int i=1;i<d_bins.size();i++) {
+	// cout<<i<<endl;
+	if(cnt < d_bins[i].count) {
+	  omega_haba=d_bins[i].haba;
+	}
+      }
+    }
+    //おめが幅きめる.
+    
+    for(unsigned int k=0;k<D_sets.size();k++) {
+
+      if(k<(unsigned)range || (unsigned)(C-1) < k+(unsigned)range) {
+	//D_sets[cnt].appl=false;
+      }
+      else {
+	  //幅チェックif() => falseなomegaとして書き込み
+	validOmega=true;
+	for(int i=1;i<=range;i++) {
+	  oh_p=log(D_sets[k].omega) - log(D_sets[k-i].omega);
+	  oh_l=log(D_sets[k+i].omega) - log(D_sets[k].omega);
+	  bb[0]= oh_p > i*(omega_haba-EPS);
+	  bb[1]= oh_p < i*(omega_haba+EPS);
+	  bb[2]= oh_l > i*(omega_haba-EPS);
+	  bb[3]= oh_l < i*(omega_haba+EPS);
+	  for(int j=0;j<4;j++) {
+	    if(!bb[j]) {
+	      validOmega=false;
+	    }
+	  }
+	  if(validOmega==false) {
+	    break;
+	  }
+	}
+	if(validOmega==false) {
+	  //D_sets[cnt].appl=false;
+	}
+	else {
+	  D_sets[k].appl=true;
+	}
+      }
+    }
+
+    cnt=0;
+    ifs.clear();
+    ifs.seekg(0,ios::beg);
+    
+    while(getline(ifs,line)) {
+      //input
+	stringstream ss(line);
+	for(int i=0;i<Nd;i++) {
+	  ss>>data[i];
+	}
+      if(D_sets[cnt].appl==true) {
+	if(cnt<range || cnt+range > (C-1)) {
+	  cerr<<""<<endl;
+	  exit(1);
+	}
+	DOS=weight[0]*log(D_sets[cnt].DOS);
+	for(int j=1;j<=range;j++) {
+	  DOS+=weight[j]*log(D_sets[cnt-j].DOS)+weight[j]*log(D_sets[cnt+j].DOS);
+	}
+	DOS/=sum_w;
+	D_sets[cnt].DOS=exp(DOS);
+      }
+      //output
+      ofs<<D_sets[cnt].omega<<" "<<D_sets[cnt].DOS<<" "<<D_sets[cnt].appl<<endl;
+      for(int i=0;i<Nd-1;i++) {
+	if(i!=10)
+	  ofs2<<data[i]<<" ";
+	else
+	  ofs2<<D_sets[cnt].DOS<<" ";
+      }
+	  ofs2<<data[Nd-1]<<endl;
+      cnt++; 
+    }
+  }//ifs - else
+}

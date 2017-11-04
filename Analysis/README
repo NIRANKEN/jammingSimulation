@@ -1,0 +1,168 @@
+
+
+modified in 2017/05/24
+
+            //0.EVal
+	    //1.Freq
+	    //2.IPR
+	    //3.IPR_1st(small)
+	    //4.IPR_2nd(large)
+	    //5.the number of the participating particles
+	    //6.the number of the participating particles (1st component)
+	    //7.cum dist
+
+	    //    |
+	    //    | (Simulation Data -> Sample Statistics)
+	    //    v
+	    
+	    //0.samplenum
+	    //1.DPHI
+	    //2.EVal
+	    //3.Freq
+	    //4.IPR
+	    //5.IPR_1st(small)
+	    //6.IPR_2nd(large)
+	    //7.the number of the participating particles
+	    //8.the number of the participating particles (1st component)
+
+	    //    |
+	    //    | (Sample Statistics -> DPHI Statistics)
+	    //    v
+	    
+  	    //0.EVal
+	    //1.Freq
+	    //2.IPR
+	    //3.IPR_1st(small)
+	    //4.IPR_2nd(large)
+	    //5.the number of the participating particles
+	    //6.the number of the participating particles (1st component)
+	    //7.DPHI
+	    //8.DPHI (center point (logscale))
+
+	    //    |
+	    //    | (DPHI Statistics -> FreqBIN Statistics)
+	    //    v
+
+            //0.Freq (bin_middle point)
+	    //1.IPR (mean)
+	    //2.IPR_min
+	    //3.IPR_max
+	    //4.IPR_variance -DY(log scale)
+            //5.IPR_variance -DY(log scale)
+	    //6.IPR_1st component (mean)
+	    //7.IPR_2nd component (mean)
+	    //8.DOS (zero eig なし)
+	    //9.DOS (zero eig あり)
+            //10.cum DOS (zero eig なし)
+            //11.binに入ったFreqの数
+            //12.粒子数
+            //13.DPHIの値(logscale bin middle point)
+	    //14.None
+            //15.None
+            //16.None
+
+	    //    |
+	    //    | (FreqBIN Statistics -> Derivation of Characteristic Frequency )
+	    //    v
+
+            //0.DPHI (logscale bin middle point)
+            //1.Characteristic Frequency
+            //2.DOSでの位置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*******************************************************************
+
+modified in 2016/02/28
+
+*******************************************************************
+
+ ##TestSampleTable0208.cpp ... 本プログラム後に全サンプルのデータを3つのテーブルに分割してまとめる。
+ ->(IN) BI ~ .txt , EigCum ~ .txt, VV ~~_CODDIST ~.txt
+ ->(OUT) PHIJ ~ .txt, EIG ~ .txt, CODDIST ~.txt
+
+__________________________________________
+| PHI | Eng | ftol | VViter | nominuseig | 
+|________________________________________| と
+______________________________
+| lambda | omega | IPR | cum | 
+|____________________________| と
+_________________
+| 接触数 | 分布 | --\
+|_______________| --/
+___________________
+| sampleID | PHIJ | 
+|_________________| と
+____________________________________________________
+| sampleID | PHI-PHIJ | lambda | omega | IPR | cum | 
+|__________________________________________________| と
+_________________________________________
+| sampleID | PHI-PHIJ | sampleID | PHIJ |  
+|_______________________________________| に。
+
+
+*******************************************************************
+
+ ##TestEIG_PHIJ0208.cpp ... ペケプログラム
+
+*******************************************************************
+
+ ##TestOutPutPHIJ\(cumdist\).cpp ... PHIJのまとめテーブルについて, PHIJの累積分布を出す.
+___________________     ______________
+| sampleID | PHIJ | --\ | PHIJ | cum |
+|_________________| --/ |____________|
+
+*******************************************************************
+
+ ##TestExtractEIG\(phi-phij\).cpp ... EIGのまとめテーブルについて, PHI - PHIJのおおよその範囲をとってきて分割.
+ ->(IN) EIG ~.txt
+ ->(OUT) EIGEnsAve ~.txt
+
+____________________________________________________
+| sampleID | PHI-PHIJ | lambda | omega | IPR | cum | --\
+|__________________________________________________| --/
+___________________________________
+| lambda | omega | IPR | PHI-PHIJ | 
+|_________________________________| に。
+
+*******************************************************************
+
+ ##TestOutPutEIG\(BINver\)0220.cpp ... 上記のPHI - PHIJ範囲で抜き取ったプログラムについて, BIN使って統計処理するプログラム.
+ ->(IN) EIGEnsAve ~.txt
+ ->(OUT) EIGEnsAve_BNxxx_ ~.txt
+
+___________________________________
+| lambda | omega | IPR | PHI-PHIJ | --\
+|_________________________________| --/
+__________________________________________________________
+| lambda | omega | IPRave | IPRmin | IPRmax | dist | cum |
+|________________________________________________________| に。
+
+*******************************************************************
+(EOF)

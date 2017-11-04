@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>15</y>
+      <width>350</width>
+      <height>450</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="statustab">
+     <attribute name="title">
+      <string>Status</string>
+     </attribute>
+     <widget class="QLabel" name="status_lb">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>90</y>
+        <width>291</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;\(^o^)/ &amp;lt; &amp;quot;Hello World!&amp;quot;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>130</y>
+        <width>293</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_22">
+         <item>
+          <widget class="QLabel" name="label_41">
+           <property name="text">
+            <string>Packing state is... </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="state_lb">
+           <property name="text">
+            <string>mechanical unstable&gt;&lt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label_38">
+           <property name="text">
+            <string>Total energy: </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="eng_lb">
+           <property name="text">
+            <string>???</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_23">
+         <item>
+          <widget class="QLabel" name="label_43">
+           <property name="text">
+            <string>Packing fraction: </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="phi_lb">
+           <property name="text">
+            <string>???</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_24">
+         <item>
+          <widget class="QLabel" name="label_45">
+           <property name="text">
+            <string>Free modes:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mode_lb">
+           <property name="text">
+            <string>???</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_25">
+         <item>
+          <widget class="QLabel" name="label_47">
+           <property name="text">
+            <string>Mean contact:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mcod_lb">
+           <property name="text">
+            <string>???</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_26">
+         <item>
+          <widget class="QLabel" name="label_55">
+           <property name="text">
+            <string>Co-vibration cluster:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="cvc_lb">
+           <property name="text">
+            <string>???</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_30">
+         <item>
+          <widget class="QLabel" name="label_57">
+           <property name="text">
+            <string>Negative eigenvalue...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="neig_lb">
+           <property name="text">
+            <string>Exist?</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_21">
+         <item>
+          <widget class="QLabel" name="label_39">
+           <property name="minimumSize">
+            <size>
+             <width>110</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Eigenmode:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="eignum_le">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="eignum_lb">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>( ??? )</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="statuslabel">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>40</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;System Status&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="startBt_2">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>360</y>
+        <width>158</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>START</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="paratab1">
+     <attribute name="title">
+      <string>Parameters1</string>
+     </attribute>
+     <widget class="QLabel" name="syslabel">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>5</y>
+        <width>241</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;System parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sysdefBt">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>390</y>
+        <width>99</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Set Default</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>40</y>
+        <width>270</width>
+        <height>346</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_14">
+         <item>
+          <widget class="QLabel" name="seed_n">
+           <property name="text">
+            <string>seed:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="seed_in">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="seed_v">
+           <property name="text">
+            <string>(0) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QLabel" name="phi_n">
+           <property name="text">
+            <string>Packing Fraction:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="phi_in">
+           <property name="text">
+            <string>1.0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="phi_v">
+           <property name="text">
+            <string>(1.0) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QLabel" name="crrate_v">
+           <property name="text">
+            <string>Compressing Rate:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="crrate_in">
+           <property name="text">
+            <string>0.05</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="crrate_v_2">
+           <property name="text">
+            <string>(0.05) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <widget class="QLabel" name="N_n">
+           <property name="text">
+            <string>the number of particles:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="N_in">
+           <property name="text">
+            <string>64</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="N_v">
+           <property name="text">
+            <string>(64) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_16">
+         <item>
+          <widget class="QLabel" name="pex_n">
+           <property name="text">
+            <string>Potential Exponent:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="pex_in">
+           <property name="text">
+            <string>2.0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="pex_v">
+           <property name="text">
+            <string>(2.0) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="lx_n">
+           <property name="text">
+            <string>x-length of the box:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lx_in">
+           <property name="text">
+            <string>400</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lx_v">
+           <property name="text">
+            <string>(400) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_17">
+         <item>
+          <widget class="QLabel" name="ly_n">
+           <property name="text">
+            <string>y-length of the box:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="ly_in">
+           <property name="text">
+            <string>400</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="ly_v">
+           <property name="text">
+            <string>(400) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_15">
+         <item>
+          <widget class="QLabel" name="sr_n">
+           <property name="text">
+            <string>Size Ratio:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="sr_in">
+           <property name="text">
+            <string>1.4</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="sr_v">
+           <property name="text">
+            <string>(1.4) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="mix1_n">
+           <property name="text">
+            <string>Mix Ratio(I):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mix1_in">
+           <property name="text">
+            <string>1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mix1_v">
+           <property name="text">
+            <string>(1) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_18">
+         <item>
+          <widget class="QLabel" name="mix2_n">
+           <property name="text">
+            <string>Mix Ratio(II):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mix2_in">
+           <property name="text">
+            <string>1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mix2_v">
+           <property name="text">
+            <string>(1) </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="paratab2">
+     <attribute name="title">
+      <string>Parameters2</string>
+     </attribute>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>329</width>
+        <height>234</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_34">
+         <item>
+          <widget class="QLabel" name="tstep_n">
+           <property name="text">
+            <string>TimeStep:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="tstep_in">
+           <property name="text">
+            <string>0.01</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="tstep_v">
+           <property name="text">
+            <string>(0.01)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_35">
+         <item>
+          <widget class="QLabel" name="damp_n">
+           <property name="text">
+            <string>Damping Coefficient:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="damp_in">
+           <property name="text">
+            <string>10</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="damp_v">
+           <property name="text">
+            <string>(10)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_31">
+         <item>
+          <widget class="QLabel" name="IFT_n">
+           <property name="text">
+            <string>increasing fraction of Tstep</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="IFT_in">
+           <property name="text">
+            <string>1.1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="IFT_v">
+           <property name="text">
+            <string>(1.1)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_32">
+         <item>
+          <widget class="QLabel" name="DFT_n">
+           <property name="text">
+            <string>decreasing fraction of Tstep</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="DFT_in">
+           <property name="text">
+            <string>0.5</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="DFT_v">
+           <property name="text">
+            <string>(0.5)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_33">
+         <item>
+          <widget class="QLabel" name="DFDT_n">
+           <property name="text">
+            <string>decreasing fraction of DampT</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="DFDT_in">
+           <property name="text">
+            <string>0.99</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="DFDT_v">
+           <property name="text">
+            <string>(0.99)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_27">
+         <item>
+          <widget class="QLabel" name="DTinit_n">
+           <property name="text">
+            <string>initial DampT value</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="DTinit_in">
+           <property name="text">
+            <string>0.1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="DTinit_v">
+           <property name="text">
+            <string>(0.1)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_28">
+         <item>
+          <widget class="QLabel" name="maxT_n">
+           <property name="text">
+            <string>Tstep Maximum:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="maxT_in">
+           <property name="text">
+            <string>0.5</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="maxT_v">
+           <property name="text">
+            <string>(0.5)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_29">
+         <item>
+          <widget class="QLabel" name="delayFIRE_n">
+           <property name="text">
+            <string>Delay time for FIRE engine</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="delayFIRE_in">
+           <property name="text">
+            <string>5</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="delayFIRE_v">
+           <property name="text">
+            <string>(5)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="MDlabel">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>50</y>
+        <width>191</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;MD parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="MDdefBt">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>390</y>
+        <width>99</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Set Default</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tooltab">
+     <attribute name="title">
+      <string>Tool</string>
+     </attribute>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>70</y>
+        <width>160</width>
+        <height>326</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="startBt">
+         <property name="text">
+          <string>START</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="noiseBt">
+         <property name="text">
+          <string>Noise</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="repBt">
+         <property name="text">
+          <string>Repaint</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="resetPtBt">
+         <property name="text">
+          <string>Reset-Painter</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="burnBt">
+         <property name="text">
+          <string>NotBurning xx</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="readBt">
+         <property name="text">
+          <string>TEXT-READ</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="calcmodeBt">
+         <property name="text">
+          <string>CalcMode</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="writeeigBt">
+         <property name="text">
+          <string>EIG-WRITE</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="ccgBt">
+         <property name="text">
+          <string>CClusterGroping</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="toollabel">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>20</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Tool Buttons&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="exit_bt">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>510</y>
+      <width>158</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Exit</string>
+    </property>
+   </widget>
+   <widget class="FIREVV" name="Grp" native="true">
+    <property name="geometry">
+     <rect>
+      <x>3</x>
+      <y>30</y>
+      <width>430</width>
+      <height>430</height>
+     </rect>
+    </property>
+   </widget>
+   <zorder>exit_bt</zorder>
+   <zorder>Grp</zorder>
+   <zorder>tabWidget</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuJam">
+    <property name="title">
+     <string>2D jamming simulation program</string>
+    </property>
+   </widget>
+   <addaction name="menuJam"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FIREVV</class>
+   <extends>QWidget</extends>
+   <header>FIREVV.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
