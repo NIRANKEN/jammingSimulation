@@ -75,7 +75,7 @@ int main(int argc, char **argv)
       Prt1=atoi(argv[3]);
       Prt2=atoi(argv[4]);
       ratio=atof(argv[5]);
-      factMScaled=(Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2);
+      factMScaled=pow((Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2),2.0/dimension);
       rdtmp="../"+rdtmp;
       if((Prt1+Prt2)%2 ==1 ) {
 	cerr<<"Pratio1:("<<Prt1<<") + Pratio2:("<<Prt2<<") must be even.";
