@@ -67,6 +67,7 @@ int main(int argc, char **argv)
   if(argc==3 || argc==6) {
       rexp_max=atof(argv[1]);
       binrange=atof(argv[2]);
+      rdtmp="../"+rdtmp;
     if(argc<4) {
       cout<<"execute ExtractEIG-method with NORMAL MODE..."<<endl;
     }
@@ -76,7 +77,6 @@ int main(int argc, char **argv)
       Prt2=atoi(argv[4]);
       ratio=atof(argv[5]);
       factMScaled=pow((Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2),2.0/dimension);
-      rdtmp="../"+rdtmp;
       if((Prt1+Prt2)%2 ==1 ) {
 	cerr<<"Pratio1:("<<Prt1<<") + Pratio2:("<<Prt2<<") must be even.";
 	exit(1);

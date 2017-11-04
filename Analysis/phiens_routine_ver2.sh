@@ -6,6 +6,10 @@ Prt2=0
 isMScaled=0
 if [ $# -eq 6 ]; then
     isMScaled=0
+    mkdir Default 
+    cp F_* Default/
+    cp *.sh Default/
+    cd Default/
 elif [ $# -eq 9 ]; then
     Prt1=$7
     Prt2=$8
