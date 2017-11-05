@@ -10,6 +10,7 @@ if [ $# -eq 4 ]; then
     omega_haba=0.05
     if [ $1 -eq 0 ]; then
        ./phiens_routine_ver2.sh $2 $3 $4 $phi_beg $phi_haba $phi_num
+       cd ./Default
     else
       echo "第一引数は 0 にしてください.."
       exit 1
@@ -35,6 +36,7 @@ elif [ $# -eq 7 ]; then
     path="./"
     if [ $1 -eq 0 ]; then
        ./phiens_routine_ver2.sh $2 $3 $4 $phi_beg $phi_haba $phi_num
+       cd ./Default
     elif [ $1 -eq 1 ]; then
        ./phiens_routine_ver2.sh $2 $3 $4 $phi_beg $phi_haba $phi_num $5 $6 $7
        cd ./MScaled
@@ -59,6 +61,7 @@ elif [ $# -eq 9 ]; then
     omega_haba=0.05
     if [ $1 -eq 0 ]; then
        ./phiens_routine_ver2.sh $2 $3 $4 $phi_beg $phi_haba $phi_num
+       cd ./Default
     elif [ $1 -eq 1 ]; then
        ./phiens_routine_ver2.sh $2 $3 $4 $phi_beg $phi_haba $phi_num $5 $6 $7
        cd ./MScaled

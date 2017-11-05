@@ -54,11 +54,12 @@ cd ~/TEST$1/
 ./scheduleFIRE.sh 3 1.4 2048 1 1 0 1 1
 ./scheduleFIRE.sh 3 1.4 4096 1 1 0 1 1
 echo "HOST NAME IS $HOSTNAME"
-if [ $HOSTNAME -eq "bear" ]; then
-  sed -e "%s/pow(2/pow(2.0/g" TestProgram_FVVmodified.cpp > FVVmod.cpp
-  sed -e "%s/pow(2/pow(2.0/g" velver.h > vv.h
-  cat vv.h > velver.h
-  icpc -fast FVVmod.cpp -o VVFIRE
-else
-  icpc -fast TestProgram_FVVmodified.cpp -o VVFIRE
-fi  
+## !!must be /bin/bash
+## if [ $HOSTNAME -eq "bear" ]; then
+##   sed -e "%s/pow(2/pow(2.0/g" TestProgram_FVVmodified.cpp > FVVmod.cpp
+##   sed -e "%s/pow(2/pow(2.0/g" velver.h > vv.h
+##   cat vv.h > velver.h
+##   icpc -fast FVVmod.cpp -o VVFIRE
+## else
+icpc -fast TestProgram_FVVmodified.cpp -o VVFIRE
+## fi  

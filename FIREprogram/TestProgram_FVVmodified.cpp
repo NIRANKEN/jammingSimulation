@@ -105,7 +105,7 @@ int main(int argc,char* argv[])
   if(PNum<256) {
     itt=300000;
   }
-  else if(PNum>=256 && PNum<=pow(2,19)) {
+  else if(PNum>=256 && PNum<=pow(2.0,19)) {
     itt=400000*(int)(PNum/256);
     if(PNum>=1024) {
       itt/=2;
