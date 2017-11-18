@@ -55,6 +55,7 @@ int main(int argc, char **argv)
 
   int Prt1,Prt2;
   double ratio,factMScaled=1;
+  bool mode_zerofreq;
 
   binstat::InputStr(dt,disperse,Pnum,dim);
   // cout<<"\nwhich directory you save data to? (path)";
@@ -64,19 +65,20 @@ int main(int argc, char **argv)
   dimension=atoi(dim.c_str());
   ParticleNum=atoi(Pnum.c_str());
   
-  if(argc==3 || argc==6) {
+  if(argc==4 || argc==7) {
       rexp_max=atof(argv[1]);
       binrange=atof(argv[2]);
-    if(argc<4) {
+      mode_zerofreq=(atoi(argv[3])!=0);
+      rdtmp="../"+rdtmp;
+    if(argc<5) {
       cout<<"execute ExtractEIG-method with NORMAL MODE..."<<endl;
     }
     else {
       cout<<"execute ExtractEIG-method with MScaled MODE..."<<endl;
-      Prt1=atoi(argv[3]);
-      Prt2=atoi(argv[4]);
-      ratio=atof(argv[5]);
-      factMScaled=(Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2);
-      rdtmp="../"+rdtmp;
+      Prt1=atoi(argv[4]);
+      Prt2=atoi(argv[5]);
+      ratio=atof(argv[6]);
+      factMScaled=pow((Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2),2.0/dimension);
       if((Prt1+Prt2)%2 ==1 ) {
 	cerr<<"Pratio1:("<<Prt1<<") + Pratio2:("<<Prt2<<") must be even.";
 	exit(1);
@@ -193,8 +195,11 @@ int main(int argc, char **argv)
 	  for(int i=0;i<N;i++) {
 	    getline(ifs,str);
 	    sscanf(str.data(),"%lf %lf %lf %lf %lf %lf %lf %lf",&eigTableVal[0],&eigTableVal[1],&eigTableVal[2],&eigTableVal[3],&eigTableVal[4],&eigTableVal[5],&eigTableVal[6],&eigTableVal[7]);
-	    EigVal=factMScaled*fabs(eigTableVal[2]);
+      EigVal=fabs(eigTableVal[2]);
+      if(mode_zerofreq || EigVal>EPS) {
+	    EigVal*=factMScaled;
 	    ofs<<setprecision(10)<<EigVal<<' '<<sqrt(EigVal)<<' '<<eigTableVal[4]<<' '<<eigTableVal[5]<<' '<<eigTableVal[6]<<' '<<eigTableVal[7]<<' '<<eigTableVal[1]<<' '<<DPHI_m<<endl;
+      }
 	    if(i==0) {
 	      tmpDPHI=eigTableVal[1];
 	      meanDPHI+=log10(tmpDPHI); // log10 で(PHI-PHIJ)のbin平均

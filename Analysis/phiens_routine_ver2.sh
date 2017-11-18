@@ -4,12 +4,16 @@ rt=0
 Prt1=0
 Prt2=0
 isMScaled=0
-if [ $# -eq 6 ]; then
+if [ $# -eq 7 ]; then
     isMScaled=0
-elif [ $# -eq 9 ]; then
-    Prt1=$7
-    Prt2=$8
-    rt=$9
+    mkdir Default 
+    cp F_* Default/
+    cp *.sh Default/
+    cd Default/
+elif [ $# -eq 10 ]; then
+    Prt1=$8
+    Prt2=$9
+    rt=$10
     isMScaled=1
     mkdir MScaled
     cp F_* MScaled/
@@ -24,10 +28,11 @@ else
     echo "引数5: DPHIのbin幅(例: 0.5)"
     xxx=`echo "$4 * $5" | bc -l`
     echo "引数6: DPHIのbin幅の数(例: 11 => 引4 * 引5 = $xxx )"
-    echo "引数7: mix ratio of 1st components, Prt1 (例:1)"
-    echo "引数8: mix ratio of 2nd components, Prt2 (例:3)"
+    echo "引数7: zerofreqをとるかどうか(例: 0:とらない, 1:とる)"
+    echo "引数8: mix ratio of 1st components, Prt1 (例:1)"
+    echo "引数9: mix ratio of 2nd components, Prt2 (例:3)"
     echo "!! Prt1 + Prt2 must be even number. (1:3 => 1+3 =4 is valid.)"
-    echo "引数9: size ratio (例: 1.4)"
+    echo "引数10: size ratio (例: 1.4)"
     exit 1    
 fi
 
@@ -43,10 +48,10 @@ dir_phi=$phi_l"_"$phi_p
 mkdir $dir_phi
 echo "$1 BI $3 $2 $dir_phi" > sin_phiens_bi_
 if [ $isMScaled -eq 1 ]; then
-	./F_phiens $phi_p $haba $Prt1 $Prt2 $rt < sin_phiens_bi_
+	./F_phiens $phi_p $haba $7 $Prt1 $Prt2 $rt < sin_phiens_bi_
 	echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
 else
-	./F_phiens $phi_p $haba < sin_phiens_bi_
+	./F_phiens $phi_p $haba $7 < sin_phiens_bi_
 	echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
 fi
 cat "./"$dir_phi"/StatInfo_EIGEnsAve_"$1"_"$2"BIN"$3".txt" >> StatInfo_PHIbin.txt 
@@ -58,10 +63,10 @@ do
     mkdir $dir_phi
     echo "$1 BI $3 $2 $dir_phi" > sin_phiens_bi_
     if [ $isMScaled -eq 1 ]; then
-	./F_phiens $phi_p $haba $Prt1 $Prt2 $rt < sin_phiens_bi_
+	./F_phiens $phi_p $haba $7 $Prt1 $Prt2 $rt < sin_phiens_bi_
 	echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
     else
-	./F_phiens $phi_p $haba < sin_phiens_bi_
+	./F_phiens $phi_p $haba $7 < sin_phiens_bi_
 	echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
     fi
     cat "./"$dir_phi"/StatInfo_EIGEnsAve_"$1"_"$2"BIN"$3".txt" >> StatInfo_PHIbin.txt 

@@ -7,12 +7,19 @@
 #include <cmath>
 #include <limits>
 #include <cstdio>
+#include <vector>
 #include "jtmessage.h"
 #include "jtvgrp.h"
+
+#include <Eigen/Sparse>
+#include <Eigen/Eigenvalues>
 
 #include "nr.h"
 #include "MT.h"
 
+typedef Eigen::SparseMatrix<double> spMat;
+typedef Eigen::Triplet<double> TripD; // row-index "i", col-index "j", value "v_ij"
+typedef Eigen::SelfAdjointEigenSolver<spMat> ESolv_SA;
 
 namespace JT
 {
@@ -45,7 +52,6 @@ namespace JT
     inline void calcPerMode_V(Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi);
     inline void calcPerMode_CVC(Vec_I_DP &z,Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D,DP R,int Prt1,int Prt2,DP rt,DP Lx,DP Ly,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi);
     inline void write_modeQ_V(ofstream &ofs,DP Eval_comp,DP CMnum,DP CMnum1,DP CMnum2,DP SPR,DP &cum,DP cumfact,DP meanTheta,DP OP,DP EPS);
-    
   }
   
   namespace dim3
@@ -63,6 +69,27 @@ namespace JT
     inline void calcPerMode_CVC(Vec_I_DP &z,Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D,DP R,int Prt1,int Prt2,DP rt,DP Lx,DP Ly,DP Lz,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi);
     inline void write_modeQ_V(ofstream &ofs,DP Eval_comp,DP CMnum,DP CMnum1,DP CMnum2,DP SPR,DP &cum,DP cumfact,DP meanTheta,DP meanTheta2,DP OP,DP EPS);
   }
+  namespace eigen {
+    inline void calcModeQuantity_EIGEN(ESolv_SA &Esolver,bool &eigplus,int D,int Prt1,int Prt2,DP rt,bool &IPRerror,int seednum,DP phi);
+    inline double CumulativeNumber_EIGEN(Eigen::VectorXd &Eval,int DN,DP EPS,bool &b);
+    inline double derive_renomalizeFactor_EIGEN(Eigen::VectorXd &Evector,int D,int PN,DP m_inv,int Nsmall);
+    inline void derive_sqEigvec_EIGEN(Eigen::VectorXd &Evector,int D,int Pn,DP fact,DP &sq);
+
+    namespace dim2 {
+      inline double C2DTheta_EIGEN(Eigen::VectorXd &eigvec,int num,int D,DP (&md)[2],DP EPS);
+      inline void calcPerMode_EIGEN(Eigen::VectorXd &Evector,DP Eval_comp,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi);
+      inline void calcModeQuantity_EIGEN(ESolv_SA &Esolver,bool &eigplus,int D,int Prt1,int Prt2,DP rt,bool &IPRerror,int seednum,DP phi);
+    }
+    namespace dim3
+    {
+    inline void calcModeQuantity_EIGEN(ESolv_SA &Esolver,bool &eigplus,int D,int Prt1,int Prt2,DP rt,bool &IPRerror,int seednum,DP phi);
+    inline void calcPerMode_EIGEN(Eigen::VectorXd &Evector,double Eval_comp,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi);
+    inline void innerAC_deriveMEAN_EIGEN(Eigen::VectorXd &eigvec,int num,int D,DP &meantheta,DP &meanphi,DP EPS,int &n_cluster,ofstream &ofs);
+    inline void innerAC_deriveVAR_EIGEN(Eigen::VectorXd &eigvec,int num,int D,DP meantheta,DP meanphi,DP &theta2,DP &phi2,DP EPS);
+    inline double C2DTheta_EIGEN(Eigen::VectorXd &eigvec,int num,int D,DP (&md)[3],DP EPS);
+    }
+  }
+
 }
 
 //--------------------------------------------
@@ -107,6 +134,20 @@ inline double JT::CumulativeNumber(Vec_I_DP &Eval,int DN,DP EPS,bool &b)
   }
   return 1.0/cum_num;
 }
+inline double JT::eigen::CumulativeNumber_EIGEN(Eigen::VectorXd &Eval,int DN,DP EPS,bool &b)
+{
+  int cum_num=0;
+  for(int i=0;i<DN;i++) {
+    if(Eval[i]<-EPS) {
+      b=false;
+      return 0.0;
+    }
+    else if(fabs(Eval[i])>EPS) {
+      cum_num+=1;
+    }
+  }
+  return 1.0/cum_num;
+}
 inline void JT::dim2::calcModeQuantity(Mat_IO_DP &Emat,Vec_I_DP &Eval,bool &eigplus,int D,int Prt1,int Prt2,DP rt,bool &IPRerror,int seednum,DP phi)
 {//sortした後の固有値、固有ベクター行列に対して適用.
  //規格化、固有値チェック、IPR,SmallParticleRatio、累積分布、書き込み
@@ -130,6 +171,30 @@ inline void JT::dim2::calcModeQuantity(Mat_IO_DP &Emat,Vec_I_DP &Eval,bool &eigp
     }
   }
 }
+inline void JT::eigen::dim2::calcModeQuantity_EIGEN(ESolv_SA &Esolver,bool &eigplus,int D,int Prt1,int Prt2,DP rt,bool &IPRerror,int seednum,DP phi)
+{//sortした後の固有値、固有ベクター行列に対して適用.
+ //規格化、固有値チェック、IPR,SmallParticleRatio、累積分布、書き込み
+
+  DP EPS=numeric_limits<double>::epsilon(),cum=1.0,cumfact;
+  ofstream wrmode;
+  string wrname;
+  Eigen::VectorXd Evals=Esolver.eigenvalues();  
+  const int DN=Evals.size();  
+  setOFSeigmethod(seednum,phi,wrname);
+  wrmode.open(wrname.data());
+  
+  cumfact=CumulativeNumber_EIGEN(Evals,DN,EPS,eigplus);
+  if(eigplus==false){
+    return;
+  }
+  else {
+    for(int i=0;i<DN;i++) {//per modenumber
+      Eigen::VectorXd Evector = Esolver.eigenvectors().col(i);      
+      calcPerMode_EIGEN(Evector,Evals[i],D,Prt1,Prt2,rt,cum,cumfact,IPRerror,wrmode,EPS,seednum,phi);
+      if(IPRerror) { break; }
+    }
+  }
+}
 inline void JT::dim2::calcModeQuantity_CVC(Vec_I_DP &z,Mat_IO_DP &Emat,Vec_I_DP &Eval,bool &eigplus,int D,DP R,int Prt1,int Prt2,DP rt,DP Lx,DP Ly,bool &IPRerror,int seednum,DP phi)
 {//sortした後の固有値、固有ベクター行列に対して適用.
  //規格化、固有値チェック、IPR,SmallParticleRatio、累積分布、書き込み
@@ -147,9 +212,7 @@ inline void JT::dim2::calcModeQuantity_CVC(Vec_I_DP &z,Mat_IO_DP &Emat,Vec_I_DP 
   else {
     for(int i=0;i<DN;i++) {//per modenumber
       calcPerMode_CVC(z,Emat,Eval[i],i,D,R,Prt1,Prt2,rt,Lx,Ly,cum,cumfact,IPRerror,wrmode,EPS,seednum,phi);
-      if(IPRerror) {
-	break;
-      }
+      if(IPRerror) { break; }
     }
   }
 }
@@ -170,9 +233,32 @@ inline void JT::dim3::calcModeQuantity(Mat_IO_DP &Emat,Vec_I_DP &Eval,bool &eigp
   else {
     for(int i=0;i<DN;i++) {//per modenumber
       calcPerMode(Emat,Eval[i],i,D,Prt1,Prt2,rt,cum,cumfact,IPRerror,wrmode,EPS,seednum,phi);
-      if(IPRerror) {
-	break;
-      }
+      if(IPRerror) { break; }
+    }
+  }
+}
+inline void JT::eigen::dim3::calcModeQuantity_EIGEN(ESolv_SA &Esolver,bool &eigplus,int D,int Prt1,int Prt2,DP rt,bool &IPRerror,int seednum,DP phi)
+{//sortした後の固有値、固有ベクター行列に対して適用.
+ //規格化、固有値チェック、IPR,SmallParticleRatio、累積分布、書き込み
+  //const int DN=Eval.size();
+  DP EPS=numeric_limits<double>::epsilon(),cum=1.0,cumfact;
+  ofstream wrmode;
+  string wrname;
+  Eigen::VectorXd Evals=Esolver.eigenvalues();
+  const int DN=Evals.size();
+  
+  setOFSeigmethod(seednum,phi,wrname);
+  wrmode.open(wrname.data());
+
+  cumfact=CumulativeNumber_EIGEN(Evals,DN,EPS,eigplus);//要修正.
+  if(eigplus==false){
+    return;
+  }
+  else {
+    for(int i=0;i<DN;i++) {//per modenumber
+      Eigen::VectorXd Evector = Esolver.eigenvectors().col(i);
+      calcPerMode_EIGEN(Evector,Evals[i],D,Prt1,Prt2,rt,cum,cumfact,IPRerror,wrmode,EPS,seednum,phi);//要修正.
+      if(IPRerror) { break; }
     }
   }
 }
@@ -193,9 +279,7 @@ inline void JT::dim3::calcModeQuantity_CVC(Vec_I_DP &z,Mat_IO_DP &Emat,Vec_I_DP 
   else {
     for(int i=0;i<DN;i++) {//per modenumber
       calcPerMode_CVC(z,Emat,Eval[i],i,D,R,Prt1,Prt2,rt,Lx,Ly,Lz,cum,cumfact,IPRerror,wrmode,EPS,seednum,phi);
-      if(IPRerror) {
-	break;
-      }
+      if(IPRerror) { break; }
     }
   }
 }
@@ -223,6 +307,36 @@ inline void JT::dim2::calcPerMode(Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D
   //renormalize, IPR, SmallParticleRatio
   for(int i=0;i<PN;i++) {
     derive_sqEigvec(Emat,v,modenum,D,i,C_inv,sq);
+    derive_innerIPRandSPR(two,four,four1,four2,spr,i,Nsmall,sq);
+  }
+  CMC2calc(CMnum,CMnum1,CMnum2,two,four,four1,four2,IPRerror,rat_threshold);
+  if(IPRerror) {
+    return;
+  }
+  write_modeQ(ofs,Eval_comp,CMnum,CMnum1,CMnum2,spr,cm,cmfact,EPS);
+}
+inline void JT::eigen::dim2::calcPerMode_EIGEN(Eigen::VectorXd &Evector,DP Eval_comp,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi)
+{
+  int DN=Evector.size(),PN=DN/D,Nsmall=(Prt1*PN)/(Prt1+Prt2);
+  DP m_inv;
+  if(D==2) {
+    m_inv=1.0/rt;
+  }
+  else {
+    cerr<<"seed:"<<seednum<<", PHI:"<<phi<<"でcalcPerMode-Error"<<endl;
+    exit(1);
+  }
+  DP C_inv;
+  DP two=0.0,four=0.0,four1=0.0,four2=0.0,sq,CMnum,CMnum1,CMnum2,rat_threshold=1.0-EPS;
+  DP spr=0.0;
+  IPRerror=false;
+  
+  //1. pre renormalize & times mass factor
+  C_inv=derive_renomalizeFactor_EIGEN(Evector,D,PN,m_inv,Nsmall);
+
+  //renormalize, IPR, SmallParticleRatio
+  for(int i=0;i<PN;i++) {
+    derive_sqEigvec_EIGEN(Evector,D,i,C_inv,sq);
     derive_innerIPRandSPR(two,four,four1,four2,spr,i,Nsmall,sq);
   }
   CMC2calc(CMnum,CMnum1,CMnum2,two,four,four1,four2,IPRerror,rat_threshold);
@@ -262,6 +376,37 @@ inline void JT::dim3::calcPerMode(Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D
   }
 
   write_modeQ(ofs,Eval_comp,CMnum,CMnum1,CMnum2,spr,cm,cmfact,EPS);
+}
+inline void JT::eigen::dim3::calcPerMode_EIGEN(Eigen::VectorXd &Evector,double Eval_comp,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi)
+{
+  int DN=Evector.size(),PN=DN/D,Nsmall=(Prt1*PN)/(Prt1+Prt2);
+  DP m_inv;
+  if(D==3) {
+    m_inv=1.0/sqrt(rt*rt*rt);
+  }
+  else {
+    cerr<<"seed:"<<seednum<<", PHI:"<<phi<<"でcalcPerMode-Error"<<endl;
+    exit(1);
+  }
+  DP C_inv;
+  DP two=0.0,four=0.0,four1=0.0,four2=0.0,sq,CMnum,CMnum1,CMnum2,rat_threshold=1.0-EPS;
+  DP spr=0.0;
+  IPRerror=false;
+  
+  //1. pre renormalize & times mass factor
+  C_inv=derive_renomalizeFactor_EIGEN(Evector,D,PN,m_inv,Nsmall); //要修正.
+  
+  //renormalize, IPR, SmallParticleRatio
+  for(int i=0;i<PN;i++) {
+    derive_sqEigvec_EIGEN(Evector,D,i,C_inv,sq); //要修正.
+    derive_innerIPRandSPR(two,four,four1,four2,spr,i,Nsmall,sq); //たぶんだいじょうぶ.
+  }
+  CMC2calc(CMnum,CMnum1,CMnum2,two,four,four1,four2,IPRerror,rat_threshold); //たぶんだいじょうぶ.
+  if(IPRerror) {
+    return;
+  }
+
+  write_modeQ(ofs,Eval_comp,CMnum,CMnum1,CMnum2,spr,cm,cmfact,EPS); //たぶんだいじょうぶ
 }
 inline void JT::dim2::calcPerMode_V(Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi)
 {
@@ -792,7 +937,43 @@ inline double JT::dim2::C2DTheta(Vec_I_DP &eigvec,int num,int D,DP (&md)[2],DP E
     return ip*ip;
   }
 }
+inline double JT::eigen::dim2::C2DTheta_EIGEN(Eigen::VectorXd &eigvec,int num,int D,DP (&md)[2],DP EPS)
+{
+  DP r=0.0,r_inv,ip=0.0;
+  DP x;
+  for(int j=0;j<D;j++) {
+    x=eigvec[D*num+j];
+    ip+=x*md[j];
+    r+=x*x;
+  }
+  if(r<EPS) {
+    return 0.0;
+  }
+  else {
+    r_inv=1.0/sqrt(r);
+    ip=r_inv*ip;
+    return ip*ip;
+  }
+}
 inline double JT::dim3::C2DTheta(Vec_I_DP &eigvec,int num,int D,DP (&md)[3],DP EPS)
+{
+  DP r=0.0,r_inv,ip=0.0;
+  DP x;
+  for(int j=0;j<D;j++) {
+    x=eigvec[D*num+j];
+    ip+=x*md[j];
+    r+=x*x;
+  }
+  if(r<EPS) {
+    return 0.0;
+  }
+  else {
+    r_inv=1.0/sqrt(r);
+    ip=r_inv*ip;
+    return ip*ip;
+  }
+}
+inline double JT::eigen::dim3::C2DTheta_EIGEN(Eigen::VectorXd &eigvec,int num,int D,DP (&md)[3],DP EPS)
 {
   DP r=0.0,r_inv,ip=0.0;
   DP x;
@@ -833,12 +1014,44 @@ inline double JT::derive_renomalizeFactor(Mat_IO_DP &Emat,int modenum,int D,int 
   //renormalize factor
   return 1.0/sqrt(C_rn);
 }
+inline double JT::eigen::derive_renomalizeFactor_EIGEN(Eigen::VectorXd &Evector,int D,int PN,DP m_inv,int Nsmall)
+{
+  DP Ecomp,C_rn;
+//1. pre renormalize & times mass factor
+  for(int i=0;i<PN;i++) {
+    if(i<Nsmall) {
+      for(int j=0;j<D;j++) {
+	Ecomp=Evector[D*i+j];
+	C_rn+=Ecomp*Ecomp;
+      }
+    }
+    else {
+      for(int j=0;j<D;j++) {
+	Ecomp=Evector[D*i+j]=m_inv*Evector[D*i+j];
+	C_rn+=Ecomp*Ecomp;
+      }
+    }
+    //eig 負ならばreturnのメソッド,
+    //累積分布求めるためのカウント.
+  }
+  //renormalize factor
+  return 1.0/sqrt(C_rn);
+}
 inline void JT::derive_sqEigvec(Mat_IO_DP &Emat,Vec_IO_DP &v,int modenum,int D,int Pn,DP fact,DP &sq)
 {
   sq=0.0;
   for(int j=0;j<D;j++) {
     v[D*Pn+j]=Emat[D*Pn+j][modenum]=fact*Emat[D*Pn+j][modenum];
     sq+=v[D*Pn+j]*v[D*Pn+j];
+  }
+  return;
+}
+inline void JT::eigen::derive_sqEigvec_EIGEN(Eigen::VectorXd &Evector,int D,int Pn,DP fact,DP &sq)
+{
+  sq=0.0;
+  for(int j=0;j<D;j++) {
+    Evector[D*Pn+j]=fact*Evector[D*Pn+j];
+    sq+=Evector[D*Pn+j]*Evector[D*Pn+j];
   }
   return;
 }

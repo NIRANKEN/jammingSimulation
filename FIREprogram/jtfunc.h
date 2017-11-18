@@ -6,6 +6,9 @@
 #include "MT.h"
 #include <vector>
 #include <limits>
+#include <Eigen/Sparse>
+
+typedef Eigen::Triplet<double> TripD; // row-index "i", col-index "j", value "v_ij"
 
 namespace JT
 {
@@ -47,6 +50,20 @@ namespace JT
   inline void HessCalc(Mat_IO_DP &H,int i1,int i2,int j1,int j2,DP ijF,DP iiF,DP jjF,DP rr);
   DP migrationLengthOnCSpace(Vec_I_DP zahyo,Vec_I_DP zahyotmp);
   //void selectWorkingParticle(int num,vector<int> &v);
+  namespace eigen
+  {
+    inline void HessCalc_EIGEN(vector<TripD> &H_el, int i,int j,DP ijF,DP iiF,DP jjF,DP rr);
+    inline void HessCalc_EIGEN(vector<TripD> &H_el,int i1,int i2,int j1,int j2,DP ijF,DP iiF,DP jjF,DP rr);
+    namespace dim2
+    {
+      void fastHess2D_EIGEN(Vec_I_DP &p, vector<TripD> &H_el,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    }
+    namespace dim3
+    {
+    void fastHess3D_EIGEN(Vec_I_DP &p, vector<TripD> &H_el,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v);
+    }
+  }
+    
 }
 
 
@@ -382,7 +399,6 @@ void JT::dim2::fastHess2D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP R,DP rt,DP al
     exit(1);
   }
   if(checkdim2(D)) {
-
     int N =v.size(),I,J;
     DP sgm,tmpxx,tmpxy,tmpyy,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,rx2,ry2,rxy,r3,ii,ij,jj,fs;
     bool m1=false,m2;
@@ -418,6 +434,48 @@ void JT::dim2::fastHess2D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP R,DP rt,DP al
   }
   return;
 }
+void JT::eigen::dim2::fastHess2D_EIGEN(Vec_I_DP &p, vector<TripD> &H_el,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(alp!=2.0) {
+    cerr<<"invalid potential exponent alpha..."<<endl;
+    exit(1);
+  }
+  if(JT::dim2::checkdim2(D)) {
+    int N =v.size(),I,J;
+    DP sgm,tmpxx,tmpxy,tmpyy,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,rx2,ry2,rxy,r3,ii,ij,jj,fs;
+    bool m1=false,m2;
+    H_el=vector<TripD>();
+    
+    for(int i=0;i<N;i++) {
+      JT::dim2::updateRadius_Hessian2D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      JT::dim2::initializeParticle2_H(Radj,R,x,y,p[I],p[I+1],m2,rtinv_j,1.0);
+	for(unsigned int l=0;l<v[i].size();l++) {
+	  J=D*v[i][l];
+	  JT::dim2::updateRadiusF_Hessian2D(J,Radj,rtinv_j,rt,Prt1,Prt2,N,D,m2);
+	  if(JT::dim2::overlapped2D_H(x,y,p[J],p[J+1],Lx,Ly,Radi,Radj,sgm,relr,rx2,ry2,rxy)) {
+	    r3=relr*relr*relr;
+	    fact=eps/(sgm*sgm*r3);
+	    r3*=fact;
+	    fs=fact*sgm;
+	    
+	    tmpxx=fs*ry2-r3;
+	    tmpxy=-fs*(rxy);
+	    tmpyy=fs*rx2-r3;
+
+	    ii=rtinv_i*rtinv_i;
+	    ij=rtinv_i*rtinv_j;
+	    jj=rtinv_j*rtinv_j;
+
+	    HessCalc_EIGEN(H_el,I,J,ij,ii,jj,tmpxx);
+	    HessCalc_EIGEN(H_el,I,I+1,J,J+1,ij,ii,jj,tmpxy);
+	    HessCalc_EIGEN(H_el,I+1,J+1,ij,ii,jj,tmpyy);
+	  }
+	}//j-loop-end
+      }//i-loop-end
+  }
+  return;
+}
 void JT::dim3::fastHess3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
 {
   if(alp!=2.0) {
@@ -425,11 +483,10 @@ void JT::dim3::fastHess3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt
     exit(1);
   }
   if(checkdim3(D)) {
-
     int N =v.size(),J,I;
     DP sgm,tmpxx,tmpxy,tmpyy,tmpyz,tmpzz,tmpzx,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,z,rx2,ry2,rz2,rxy,ryz,rzx,r3,ii,ij,jj,fs;
     bool m1=false,m2;
-    H=0.0;
+    H=0;
     
     for(int i=0;i<N;i++) {
       updateRadius_Hessian3D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
@@ -460,6 +517,54 @@ void JT::dim3::fastHess3D(Vec_I_DP &p, Mat_IO_DP &H,DP Lx,DP Ly,DP Lz,DP R,DP rt
 	    HessCalc(H,I+1,I+2,J+1,J+2,ij,ii,jj,tmpyz);
 	    HessCalc(H,I+2,J+2,ij,ii,jj,tmpzz);
 	    HessCalc(H,I+2,I,J+2,J,ij,ii,jj,tmpzx);
+	  }
+	}//j-loop-end
+      }//i-loop-end
+  }
+  return;
+}
+void JT::eigen::dim3::fastHess3D_EIGEN(Vec_I_DP &p, vector<TripD> &H_el,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int D,DP eps,NRVec<vector<int> > &v)
+{
+  if(alp!=2.0) {
+    cerr<<"invalid potential exponent alpha..."<<endl;
+    exit(1);
+  }
+  if(JT::dim3::checkdim3(D)) {
+
+    int N =v.size(),J,I;
+    DP sgm,tmpxx,tmpxy,tmpyy,tmpyz,tmpzz,tmpzx,Radi=R,Radj,rtinv_i=1.0,rtinv_j,relr,fact,x,y,z,rx2,ry2,rz2,rxy,ryz,rzx,r3,ii,ij,jj,fs;
+    bool m1=false,m2;
+    H_el=vector<TripD>();    
+    
+    for(int i=0;i<N;i++) {
+      JT::dim3::updateRadius_Hessian3D(i,Radi,rtinv_i,rt,Prt1,Prt2,N,m1);
+      I=D*i;
+      JT::dim3::initializeParticle2_H(Radj,R,x,y,z,p[I],p[I+1],p[I+2],m2,rtinv_j,1.0);
+	for(unsigned int l=0;l<v[i].size();l++) {
+	  J=D*v[i][l];
+	  JT::dim3::updateRadiusF_Hessian3D(J,Radj,rtinv_j,rt,Prt1,Prt2,N,D,m2);
+	  if(JT::dim3::overlapped3D_H(x,y,z,p[J],p[J+1],p[J+2],Lx,Ly,Lz,Radi,Radj,sgm,relr,rx2,ry2,rz2,rxy,ryz,rzx)) {
+	    r3=relr*relr*relr;
+	    fact=eps/(sgm*sgm*r3);
+	    r3*=fact;
+	    fs=fact*sgm;
+		  
+	    tmpxx=fs*(ry2+rz2)-r3;
+	    tmpxy=-fs*(rxy);
+	    tmpyy=fs*(rz2+rx2)-r3;
+	    tmpyz=-fs*(ryz);
+	    tmpzz=fs*(rx2+ry2)-r3;
+	    tmpzx=-fs*(rzx);
+	    ii=rtinv_i*rtinv_i;
+	    ij=rtinv_i*rtinv_j;
+	    jj=rtinv_j*rtinv_j;
+
+	    HessCalc_EIGEN(H_el,I,J,ij,ii,jj,tmpxx);
+	    HessCalc_EIGEN(H_el,I,I+1,J,J+1,ij,ii,jj,tmpxy);
+	    HessCalc_EIGEN(H_el,I+1,J+1,ij,ii,jj,tmpyy);
+	    HessCalc_EIGEN(H_el,I+1,I+2,J+1,J+2,ij,ii,jj,tmpyz);
+	    HessCalc_EIGEN(H_el,I+2,J+2,ij,ii,jj,tmpzz);
+	    HessCalc_EIGEN(H_el,I+2,I,J+2,J,ij,ii,jj,tmpzx);
 	  }
 	}//j-loop-end
       }//i-loop-end
@@ -736,13 +841,30 @@ inline void JT::HessCalc(Mat_IO_DP &H,int i,int j,DP ijF,DP iiF,DP jjF,DP rr)
 	    H[i][i]-=iiF*rr;
 	    H[j][j]-=jjF*rr;
 }
+inline void JT::eigen::HessCalc_EIGEN(vector<TripD> &H_el,int i,int j,DP ijF,DP iiF,DP jjF,DP rr)
+{
+  H_el.push_back(TripD(i,j,ijF*rr));
+  H_el.push_back(TripD(j,i,ijF*rr));
+  H_el.push_back(TripD(i,i,-iiF*rr));
+  H_el.push_back(TripD(j,j,-jjF*rr));
+}
 inline void JT::HessCalc(Mat_IO_DP &H,int i1,int i2,int j1,int j2,DP ijF,DP iiF,DP jjF,DP rr)
 {
 	    H[i1][j2]=H[i2][j1]=H[j1][i2]=H[j2][i1]=ijF*rr;
 	    H[i1][i2]=H[i2][i1]-=iiF*rr;
 	    H[j1][j2]=H[j2][j1]-=jjF*rr;
 }
-
+inline void JT::eigen::HessCalc_EIGEN(vector<TripD> &H_el,int i1,int i2,int j1,int j2,DP ijF,DP iiF,DP jjF,DP rr)
+{
+  H_el.push_back(TripD(i1,j2,ijF*rr));
+  H_el.push_back(TripD(i2,j1,ijF*rr));
+  H_el.push_back(TripD(j1,i2,ijF*rr));
+  H_el.push_back(TripD(j2,i1,ijF*rr));
+  H_el.push_back(TripD(i1,i2,-iiF*rr));
+  H_el.push_back(TripD(i2,i1,-iiF*rr));
+  H_el.push_back(TripD(j1,j2,-jjF*rr));
+  H_el.push_back(TripD(j2,j1,-jjF*rr));
+}
 
 DP migrationLengthOnCSpace(Vec_I_DP zahyo,Vec_I_DP zahyotmp)
 {

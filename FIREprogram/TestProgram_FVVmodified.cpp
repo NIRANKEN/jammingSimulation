@@ -105,7 +105,7 @@ int main(int argc,char* argv[])
   if(PNum<256) {
     itt=300000;
   }
-  else if(PNum>=256 && PNum<=pow(2,19)) {
+  else if(PNum>=256 && PNum<=pow(2.0,19)) {
     itt=400000*(int)(PNum/256);
     if(PNum>=1024) {
       itt/=2;
@@ -161,7 +161,8 @@ int main(int argc,char* argv[])
 		    JT::dim2::OutputForQt(zahyo,Leng,Leng,dim,PNum,Rad,PHI,ratio,Pratio1,Pratio2,l);
 		    break;
 		  }
-		  JT::dim2::fastMC2D(zahyo,Leng,Leng,Rad,ratio,alpha,Pratio1,Pratio2,l,PHI,dim,pluseig,invalidflag,iprerror,contactList);//
+		  //JT::dim2::fastMC2D(zahyo,Leng,Leng,Rad,ratio,alpha,Pratio1,Pratio2,l,PHI,dim,pluseig,invalidflag,iprerror,contactList);//
+		  JT::eigen::dim2::fastMC2D_EIGEN(zahyo,Leng,Leng,Rad,ratio,alpha,Pratio1,Pratio2,l,PHI,dim,pluseig,invalidflag,iprerror,contactList);//
 		  /*
 		  if(invalidflag==true) {
 		    JT::jacobiErrWrite(sserr,kakikoJCBERR,l,i,PHI,pot,ftol,VViter);
@@ -249,7 +250,8 @@ int main(int argc,char* argv[])
 		    JT::dim3::OutputForQt(zahyo,Leng,Leng,Leng,dim,PNum,Rad,PHI,ratio,Pratio1,Pratio2,l);
 		    break;
 		  }
-		  JT::dim3::fastMC3D(zahyo,Leng,Leng,Leng,Rad,ratio,alpha,Pratio1,Pratio2,l,PHI,dim,pluseig,invalidflag,iprerror,contactList);//
+		  JT::eigen::dim3::fastMC3D_EIGEN(zahyo,Leng,Leng,Leng,Rad,ratio,alpha,Pratio1,Pratio2,l,PHI,dim,pluseig,invalidflag,iprerror,contactList);//
+		  //JT::dim3::fastMC3D(zahyo,Leng,Leng,Leng,Rad,ratio,alpha,Pratio1,Pratio2,l,PHI,dim,pluseig,invalidflag,iprerror,contactList);//
 		  if(pluseig==true && iprerror==false && invalidflag==false) {
 		    JT::setOFScoddist(kakikoCODDIST,strdate,l,PHI);
 		    JT::dim3::fastDCod3D(zahyo,distcod,Rad,Leng,Leng,Leng,ratio,Pratio1,Pratio2,dim,contactList);
