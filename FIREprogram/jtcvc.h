@@ -117,7 +117,7 @@ inline void JT::CMC2calc(DP &CMnum,DP &CMnum1,DP &CMnum2,DP two,DP four,DP four1
   CMnum=four*two;
   CMnum1=four1*two;
   CMnum2=four2*two;
-  if(CMnum>0.9 && CMnum<ratTH)
+  if(CMnum>0.9 && CMnum<ratTH) // rattlerは出てくるのでそれよりも小さく、0.9よりも大きい値で.
     IPRerror=true;
 }
 inline double JT::CumulativeNumber(Vec_I_DP &Eval,int DN,DP EPS,bool &b)
@@ -340,9 +340,8 @@ inline void JT::eigen::dim2::calcPerMode_EIGEN(Eigen::VectorXd &Evector,DP Eval_
     derive_innerIPRandSPR(two,four,four1,four2,spr,i,Nsmall,sq);
   }
   CMC2calc(CMnum,CMnum1,CMnum2,two,four,four1,four2,IPRerror,rat_threshold);
-  if(IPRerror) {
-    return;
-  }
+  if(fabs(Eval_comp)<EPS) { IPRerror=false; } //zero-frequencyではrattlerのモードと混ざって引っかかるので、falseにする.
+  if(IPRerror) { return; }
   write_modeQ(ofs,Eval_comp,CMnum,CMnum1,CMnum2,spr,cm,cmfact,EPS);
 }
 inline void JT::dim3::calcPerMode(Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi)
@@ -402,10 +401,8 @@ inline void JT::eigen::dim3::calcPerMode_EIGEN(Eigen::VectorXd &Evector,double E
     derive_innerIPRandSPR(two,four,four1,four2,spr,i,Nsmall,sq); //たぶんだいじょうぶ.
   }
   CMC2calc(CMnum,CMnum1,CMnum2,two,four,four1,four2,IPRerror,rat_threshold); //たぶんだいじょうぶ.
-  if(IPRerror) {
-    return;
-  }
-
+  if(fabs(Eval_comp)<EPS) { IPRerror=false; } //zero-frequencyではrattlerのモードと混ざって引っかかるので、falseにする.  
+  if(IPRerror) { return; }
   write_modeQ(ofs,Eval_comp,CMnum,CMnum1,CMnum2,spr,cm,cmfact,EPS); //たぶんだいじょうぶ
 }
 inline void JT::dim2::calcPerMode_V(Mat_IO_DP &Emat,DP Eval_comp,int modenum,int D,int Prt1,int Prt2,DP rt,DP &cm,DP cmfact,bool &IPRerror,ofstream &ofs,DP EPS,int seednum,DP phi)

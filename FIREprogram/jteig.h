@@ -14,6 +14,13 @@
 #include "nr.h"
 #include "MT.h"
 
+#include <Eigen/Sparse>
+#include <Eigen/Eigenvalues>
+
+// typedef Eigen::SparseMatrix<double> spMat;
+// typedef Eigen::Triplet<double> TripD; // row-index "i", col-index "j", value "v_ij"
+// typedef Eigen::SelfAdjointEigenSolver<spMat> ESolv_SA;
+
 namespace JT
 {
   //--------------------//
@@ -46,6 +53,16 @@ namespace JT
     void fastMC3D(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,int D,bool &eigplus, bool &invalidflag,bool &IPRerror,NRVec<vector<int> > &v);
     void deriveEigvec3D(Vec_I_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,Vec_O_DP &out,DP &eigval,int D,int vecnum);
     void outputPEL3D(Vec_I_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,Vec_I_DP &eigvec,int D,int vecnum,DP func(Vec_IO_DP,DP,DP,DP,DP,DP,int,int,int,DP));
+  }
+
+  namespace eigen
+  {
+    namespace dim2{
+      void fastMC2D_EIGEN(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,int D,bool &eigplus, bool &invalidflag,bool &IPRerror,NRVec<vector<int> > &v);
+    }
+    namespace dim3{
+      void fastMC3D_EIGEN(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,int D,bool &eigplus, bool &invalidflag,bool &IPRerror,NRVec<vector<int> > &v);
+    }
   }
 }
 
@@ -96,6 +113,21 @@ void JT::dim2::fastMC2D(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,
     //calcModeQuantity_CVC(zahyo,EigMat,Eigval,eigplus,D,R,Prt1,Prt2,rt,Lx,Ly,IPRerror,num,phi);
   }
 }
+void JT::eigen::dim2::fastMC2D_EIGEN(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,int D,bool &eigplus, bool &invalidflag,bool &IPRerror,NRVec<vector<int> > &v)
+{
+  if(JT::dim2::checkdim2(D)) {
+    eigplus=true;
+    int N=zahyo.size();
+    DP eps=1.0;
+    vector<TripD> HesElements;
+    spMat Hes(N,N);
+    JT::eigen::dim2::fastHess2D_EIGEN(zahyo,HesElements,Lx,Ly,R,rt,alp,Prt1,Prt2,D,eps,v);
+    Hes.setFromTriplets(HesElements.begin(),HesElements.end());    
+    ESolv_SA solver(Hes);    // コストラクタ内の計算後sortもされている。
+    calcModeQuantity_EIGEN(solver,eigplus,D,Prt1,Prt2,rt,IPRerror,num,phi);
+
+  }
+}
 void JT::dim3::ModeCalc3D(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,int D,bool &eigplus,bool &invalidflag,bool &IPRerror)
 {
   if(checkdim3(D)) {
@@ -137,6 +169,20 @@ void JT::dim3::fastMC3D(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int
     NR::eigsrt(Eigval,EigMat); //固有値の大きい順番でソートされる.
     calcModeQuantity(EigMat,Eigval,eigplus,D,Prt1,Prt2,rt,IPRerror,num,phi);
     //calcModeQuantity_CVC(zahyo,EigMat,Eigval,eigplus,D,R,Prt1,Prt2,rt,Lx,Ly,Lz,IPRerror,num,phi);
+  }
+}
+void JT::eigen::dim3::fastMC3D_EIGEN(Vec_IO_DP &zahyo,DP Lx,DP Ly,DP Lz,DP R,DP rt,DP alp,int Prt1,int Prt2,int num,DP phi,int D,bool &eigplus,bool &invalidflag,bool &IPRerror,NRVec<vector<int> > &v)
+{
+  if(JT::dim3::checkdim3(D)) {
+    eigplus=true;
+    int N=zahyo.size();
+    DP eps=1.0;
+    vector<TripD> HesElements;
+    spMat Hes(N,N);
+    JT::eigen::dim3::fastHess3D_EIGEN(zahyo,HesElements,Lx,Ly,Lz,R,rt,alp,Prt1,Prt2,D,eps,v);
+    Hes.setFromTriplets(HesElements.begin(),HesElements.end());    
+    ESolv_SA solver(Hes);    // コストラクタ内の計算後sortもされている。
+    calcModeQuantity_EIGEN(solver,eigplus,D,Prt1,Prt2,rt,IPRerror,num,phi);
   }
 }
 void JT::WriteEigInfo(Mat_I_DP &EigMat,Vec_I_DP &Eigval,int num,DP phi,int D,int Prt1,int Prt2,bool &IPRerror)
