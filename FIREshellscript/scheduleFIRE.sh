@@ -21,19 +21,19 @@ else
 fi
 
 if [ $3 -eq 64 ]; then
-:
+by
 elif [ $3 -eq 128 ]; then
-:
+by
 elif [ $3 -eq 256 ]; then
-:
+by
 elif [ $3 -eq 512 ]; then
-:
+by
 elif [ $3 -eq 1024 ]; then
-:
+by
 elif [ $3 -eq 2048 ]; then
-:
+by
 elif [ $3 -eq 4096 ]; then
-:
+by
 else
     echo "粒子数"$3"の値が不正です." 1>&2
     exit 1
@@ -50,28 +50,28 @@ else
     exit 1
 fi
 
-echo "#!/bin/sh" > "FIRE_"$zzz$1"DN"$3"_"$4":"$5".sh"
-echo -e "\n" >> "FIRE_"$zzz$1"DN"$3"_"$4":"$5".sh"
+echo "#!/bin/sh" > "FIRE_"$zzz$1"DN"$3"_"$4"by"$5".sh"
+echo -e "\n" >> "FIRE_"$zzz$1"DN"$3"_"$4"by"$5".sh"
 xxx=$6
 yyy=$(($6+$7))
 
 for i in `seq 1 $8`
     do
-        echo  "./VVFIRE "$xxx" "$yyy" $phi_beg 0.6 -0.05 "$3" "$1" "$2" "$4" "$5" &" >> "FIRE_"$zzz$1"DN"$3"_"$4":"$5".sh"
+        echo  "./VVFIRE "$xxx" "$yyy" $phi_beg 0.6 -0.05 "$3" "$1" "$2" "$4" "$5" &" >> "FIRE_"$zzz$1"DN"$3"_"$4"by"$5".sh"
         xxx=$yyy
         yyy=$((yyy+$7))
 done
 
-vvv="FIRE_"$zzz$1"DN"$3"_"$4":"$5".sh" 
+vvv="FIRE_"$zzz$1"DN"$3"_"$4"by"$5".sh" 
 chmod 755 $vvv
 
 Fdir=""
-if [ $4 -eq 1 ] && [ $5 -eq 1 ]; then ## BI1:1
+if [ $4 -eq 1 ] && [ $5 -eq 1 ]; then ## BI1by1
     Fdir="$zzz$1"DN"$3"
 elif [ $5 -eq 0 ]; then  ## MONO 
     Fdir="$1"DN"$3"
-else ## BI $4:$5
-    Fdir="$zzz$1"DN"$3"_"$4":"$5"
+else ## BI $4by$5
+    Fdir="$zzz$1"DN"$3"_"$4"by"$5"
 fi
 
 if [ -d $Fdir ]; then

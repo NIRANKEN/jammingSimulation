@@ -36,9 +36,9 @@ mkdir ~/TEST$1/BI3DN4096
 mkdir ~/TEST$1/BI2DN256
 #mkdir ~/TEST$1/BI2DN512
 #mkdir ~/TEST$1/BI2DN1024
-#mkdir ~/TEST$1/BI3DN256_1:3
-#mkdir ~/TEST$1/BI3DN256_3:1
-#mkdir ~/TEST$1/BI3DN256_0:1
+#mkdir ~/TEST$1/BI3DN256_1by3
+#mkdir ~/TEST$1/BI3DN256_3by1
+#mkdir ~/TEST$1/BI3DN256_0by1
 cp ~/sagyo2017$1/FIREshellscript/FIREcp.sh ~/TEST$1/
 cp ~/sagyo2017$1/FIREshellscript/scheduleFIRE.sh ~/TEST$1/
 cp ~/sagyo2017$1/FIREshellscript/FIRE_errsampleremove.sh ~/TEST$1/
@@ -54,12 +54,5 @@ cd ~/TEST$1/
 ./scheduleFIRE.sh 3 1.4 2048 1 1 0 1 1
 ./scheduleFIRE.sh 3 1.4 4096 1 1 0 1 1
 echo "HOST NAME IS $HOSTNAME"
-## !!must be /bin/bash
-## if [ $HOSTNAME -eq "bear" ]; then
-##   sed -e "%s/pow(2/pow(2.0/g" TestProgram_FVVmodified.cpp > FVVmod.cpp
-##   sed -e "%s/pow(2/pow(2.0/g" velver.h > vv.h
-##   cat vv.h > velver.h
-##   icpc -fast FVVmod.cpp -o VVFIRE
-## else
-icpc -fast TestProgram_FVVmodified.cpp -o VVFIRE
+icpc -fast TestProgram_FVVmodified.cpp -I ~/lib -o VVFIRE
 ## fi  
