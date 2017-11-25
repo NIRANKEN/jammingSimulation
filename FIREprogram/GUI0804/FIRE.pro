@@ -5,11 +5,11 @@
 QT += gui widgets core
 TEMPLATE = app
 TARGET = FIRE
-INCLUDEPATH += .
+INCLUDEPATH += . ~/lib
 CONFIG += c++11
 
 # Input
-HEADERS += FIREVV.h MT.h nr.h nrtypes.h nrutil.h \
+HEADERS += FIREVV.h \
     jt.h \
     jteig.h \
     jtfunc.h \
@@ -17,7 +17,6 @@ HEADERS += FIREVV.h MT.h nr.h nrtypes.h nrutil.h \
     jtsim.h \
     jttool.h \
     jtcvc.h \
-    MT.h \
     velver.h \
     mainwindow.h \
     jtvgrp.h
