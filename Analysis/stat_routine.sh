@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ $# -ne 5 ]; then
     echo "引数は5個宣言してください."

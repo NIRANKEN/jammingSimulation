@@ -63,11 +63,11 @@ do
     mkdir $dir_phi
     echo "$1 BI $3 $2 $dir_phi" > sin_phiens_bi_
     if [ $isMScaled -eq 1 ]; then
-	./F_phiens $phi_p $haba $7 $Prt1 $Prt2 $rt < sin_phiens_bi_
-	echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
+	      ./F_phiens $phi_p $haba $7 $Prt1 $Prt2 $rt < sin_phiens_bi_
+	      echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
     else
-	./F_phiens $phi_p $haba $7 < sin_phiens_bi_
-	echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
+	      ./F_phiens $phi_p $haba $7 < sin_phiens_bi_
+	      echo "isMScaled is $isMScaled" >> "logger_MScaled_phiensScript.txt"
     fi
     cat "./"$dir_phi"/StatInfo_EIGEnsAve_"$1"_"$2"BIN"$3".txt" >> StatInfo_PHIbin.txt 
 done

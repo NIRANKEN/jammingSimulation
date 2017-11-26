@@ -1,6 +1,0 @@
-#!/bin/sh
-
-icpc -fast TestSampleTable0208.cpp -o F_sample
-icpc -fast TestOutPutEIG\(EnsAve\).cpp -o F_phiens
-icpc -fast TestOutPutEIG\(BINver\)0221.cpp -o F_binstat
-icpc -fast TestOutPutPHIJ\(cumdist\).cpp -o F_phijcum
