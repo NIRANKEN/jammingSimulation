@@ -5,7 +5,7 @@
 QT += gui widgets core
 TEMPLATE = app
 TARGET = FIRE
-INCLUDEPATH += . ~/lib
+INCLUDEPATH += . /home/y-kimura/lib
 CONFIG += c++11
 
 # Input

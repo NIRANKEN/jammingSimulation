@@ -437,11 +437,11 @@ void JT::dim2::fastVVF2D(Vec_IO_DP &p, Vec_IO_DP &vel, DP &dmpt,DP mass, DP &tst
     if(N<=384) {
       fI=1;
     }
-    else if(N>384 && N<=3*pow(2,19)) {
+    else if(N>384 && N<=3*pow(2.0,19)) {
       fI=N/384;
     }
     else {
-      fI=pow(2,12);
+      fI=pow(2.0,12);
     }
     int fInit=1;
     if(!isInit) {
@@ -603,11 +603,11 @@ void JT::dim3::fastVVF3D(Vec_IO_DP &p, Vec_IO_DP &vel, DP &dmpt,DP mass, DP &tst
     if(N<=384) {
       fI=1;
     }
-    else if(N>384 && N<=3*pow(2,19)) {
+    else if(N>384 && N<=3*pow(2.0,19)) {
       fI=N/384;
     }
     else {
-      fI=pow(2,12);
+      fI=pow(2.0,12);
     }
     int fInit=1;
     if(!isInit) {

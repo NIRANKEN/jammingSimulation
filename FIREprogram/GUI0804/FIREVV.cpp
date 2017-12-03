@@ -3,6 +3,8 @@
 #include "jt.h"
 #include <iomanip>
 #include <QFileDialog>
+#include <Eigen/Sparse>
+
 //#include "ENTERev.h"
 
 FIREVV::FIREVV(QWidget *parent):QWidget(parent),zahyo(0.0),vel(0.0),Force(0.0),Forcetmp(0.0),ratio(1.0),PHI(1.0),Rad(0.0),Leng_x(0.0),Leng_y(0.0),func(0.0),functmp(0.0),alpha(2.0),PN(100),Pratio1(1),Pratio2(1),DMPt(1.0e-1),Tstep(1.0e-2),paintcnt(-1),fra_I(1.1),fra_D(0.5),fra_A(0.99),DMPt_I(1.0e-1),Tstep_M(0.5),ITER_FIRE(5),openum(-2),opedist(0.0),E_mat(0,0),E_val(0.0),eignum(-1),cL(),attribute(Vec_INT(100,PN)),pC(false),isModeCalculated(false),Nc(0),MDcount(0)
@@ -605,25 +607,32 @@ void FIREVV::Inc_PHI(double inc,int PNum)
 
 int FIREVV::Modenumber(bool plus)
 {
+
   int N=zahyo.size();
-  Mat_DP Hes(N,N),EigMat(N,N);
+  DP eps=1.0;
+  vector<TripD> HesElements;
+  Mat_DP EigMat(N,N);
+  spMat Hes(N,N);
   Vec_DP Eigval(N),IPR(N),IPR1(N),IPR2(N),eigvec_cntSmall(N);
   int cnt=0,eigcnt=0;
-  bool invalidflag;
-  DP EPS=numeric_limits<double>::epsilon(),halfm_inv;
-  JT::dim2::fastHess2D(zahyo,Hes,Leng_x,Leng_y,Rad,ratio,alpha,Pratio1,Pratio2,2,1.0,cL);
-  NR::jacobi(Hes,Eigval,EigMat,cnt,invalidflag);
+  DP EPS=numeric_limits<double>::epsilon(),halfm_inv=1.0/(ratio); //dim2
 
-  if(ratio!=1.0) {
-    //BIdisperseのときは本来の固有ベクターに変換しなければならない。
-    halfm_inv=1.0/(ratio);
-  for(int i=0;i<N;i++) {
-    for(int j=(Pratio1*N)/(Pratio1+Pratio2);j<N;j++) 
-    EigMat[j][i]*=halfm_inv;
+  JT::eigen::dim2::fastHess2D_EIGEN(zahyo,HesElements,Leng_x,Leng_y,Rad,ratio,alpha,Pratio1,Pratio2,2,eps,cL);
+  Hes.setFromTriplets(HesElements.begin(),HesElements.end());    
+  ESolv_SA Esolver(Hes);    // コストラクタ内の計算後sortもされている。
+  Eigen::VectorXd Evals=Esolver.eigenvalues();  
+  int firstCompIdx=(Pratio1*N)/(Pratio1+Pratio2);
+  for(int i=0;i<N;i++) {//per modenumber
+    Eigen::VectorXd Evector = Esolver.eigenvectors().col(i);      
+    for(int j=0;j<firstCompIdx;j++) {
+      EigMat[j][i]=Evector[j];
     }
+    for(int j=firstCompIdx;j<N;j++) {
+      //BIdisperseのときは本来の固有ベクターに変換しなければならない。
+      EigMat[j][i]=halfm_inv*Evector[j];
+    }
+    Eigval[i]=Evals[i];
   }
-  NR::eigsrt(Eigval,EigMat);
-  JT::RenomalizeEigvec(EigMat);
   //FIREVV::Normalize_EIG();
   JT::CollectiveMotionCheck2(EigMat,IPR,IPR1,IPR2,2,Pratio1,Pratio2);
   JT::countEigComponents(EigMat,eigvec_cntSmall,Pratio1,Pratio2);
