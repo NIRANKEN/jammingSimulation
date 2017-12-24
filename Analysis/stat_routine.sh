@@ -1,16 +1,16 @@
 #!/bin/bash
 
-if [ $# -ne 5 ]; then
+if [ $# -ne 3 ]; then
     echo "引数は5個宣言してください."
     echo "引数1 日付(例by 0510)"
     echo "引数2 空間次元(例by 3D)"
     echo "引数3 粒子数(例by 256)"
-    echo "引数4 開始sample num(例by 0)"
-    echo "引数5 終了sample num(例by 400)"
+    # echo "引数4 開始sample num(例by 0)"
+    # echo "引数5 終了sample num(例by 400)"
     exit 1
 fi
 
-./sample_routine.sh $1 $2 $3 $4 $5
+# ./sample_routine.sh $1 $2 $3 $4 $5
 
 # echo "引数1: 固有振動数の出力モード(例: 0->normal, 1->MScaled)"
 # echo "引数2: zero-frequencyの出力モード(例: 0->出力しない, 1->出力する)"

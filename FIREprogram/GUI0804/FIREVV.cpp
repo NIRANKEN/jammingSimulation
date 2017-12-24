@@ -13,7 +13,7 @@ FIREVV::FIREVV(QWidget *parent):QWidget(parent),zahyo(0.0),vel(0.0),Force(0.0),F
   Set_Lengx(400);
   Set_Lengy(400);
 
-  Set_PN(256);
+  Set_PN(1024);
   Initialize_contactList(PN);
   //Gen_zahyo(0,PN);
   Gen_zahyo_cry(PN,Leng_x);
@@ -451,6 +451,7 @@ void FIREVV::mouseReleaseEvent(QMouseEvent* event)
 
 inline void FIREVV::initializeSystemQuantity(int N)
 {
+  PN=N;
   Vec_DP Fpot(2*N);
   DP mass=1.0;
   bool relax=true;
@@ -870,6 +871,12 @@ void FIREVV::inputZahyodata() {
   QTextStream in2(&line);
   in2>>d>>N>>phi>>rt>>prt1>>prt2;
   qDebug()<<d<<' '<<N<<' '<<' '<<phi<<' '<<rt<<' '<<prt1<<' '<<prt2<<endl;
+  Set_PN(N);
+  Set_PHI(phi);
+  Set_ratio(rt);
+  Set_Pratio1(prt1);
+  Set_Pratio1(prt2);
+  initializeSystemQuantity(N);
   if(d!=2) {
     qDebug()<<"Error!!"<<endl;
   }
@@ -882,8 +889,10 @@ void FIREVV::inputZahyodata() {
       if(2*cnt<d*N) {
 	in3>>z[cnt*2]>>z[cnt*2+1];
 	qDebug()<<z[cnt*2]<<' '<<z[cnt*2+1]<<endl;
-	z[cnt*2]*=Leng_x/(100.0*sqrt(N/128));//Qt no length scale ni change.
-	z[cnt*2+1]*=Leng_y/(100.0*sqrt(N/128));
+    z[cnt*2]*=Leng_x/(100.0*sqrt(N/128));//Qt no length scale ni change.
+    z[cnt*2+1]*=Leng_y/(100.0*sqrt(N/128));
+    //z[cnt*2]*=Leng_x/(24.2703);// for nakata-kun (N100)
+    //z[cnt*2+1]*=Leng_y/(24.2703);
       }
       cnt+=1;
     }
@@ -896,12 +905,9 @@ void FIREVV::inputZahyodata() {
       Forcetmp=Force;
       func=functmp=JT::dim2::potential(zahyo,Leng_x,Leng_y,Rad,ratio,alpha,Pratio1,Pratio2,2,1.0);
     }
-    Set_PN(N);
-    Set_PHI(phi);
-    Set_ratio(rt);
-    Set_Pratio1(prt1);
-    Set_Pratio1(prt2);
-    Gen_PHI(phi,Leng_x,Leng_y,N);
+
+
+    //Gen_PHI(phi,Leng_x,Leng_y,N);
   }
 }
 
