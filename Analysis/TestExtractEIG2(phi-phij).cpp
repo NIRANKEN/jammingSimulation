@@ -79,7 +79,7 @@ int main(int argc, char **argv)
       Prt2=atoi(argv[5]);
       ratio=atof(argv[6]);
       //factMScaled=pow((Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2),2.0/dimension); //Hessian scaling
-      factMScaled=pow((Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2),1.0); //effective mass scaling
+      factMScaled=(Prt1+Prt2*pow(ratio,dimension))/(Prt1+Prt2); //effective mass scaling
       if((Prt1+Prt2)%2 ==1 ) {
 	cerr<<"Pratio1:("<<Prt1<<") + Pratio2:("<<Prt2<<") must be even.";
 	exit(1);
