@@ -27,7 +27,7 @@ set style fill  empty border
 set style rectangle back fc  bgnd fillstyle   solid 1.00 border lt -1
 set style circle radius graph 0.02, first 0.00000, 0.00000 
 set style ellipse size graph 0.05, 0.03, first 0.00000 angle 0 units xy
-set dummy P, N
+set dummy P, N, a
 set format x "10^{%L}" 
 set format y "10^{%L}" 
 set format x2 "% h" 
@@ -141,7 +141,7 @@ set ylabel ""
 set ylabel  font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate by -270
-set yrange [ * : * ] noreverse nowriteback
+set yrange [ * : 100.000 ] noreverse nowriteback
 set y2range [ * : * ] noreverse nowriteback
 set zlabel "" 
 set zlabel  font "" textcolor lt -1 norotate
@@ -174,35 +174,30 @@ set loadpath
 set fontpath 
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
+set key font "Arial,16"
+set tics font "Arial,16"
 
-f(P,N)=C+b*log10(P+B*N**(-g))
+set yrange[100:5000]
+
+f(P,N,a)=-0.5*log10((a+(1.0-a)*1.4**3))+C+b*log10(P+B*N**(-g))
 h(P)=A*(P+B)**b
 GNUTERM = "qt"
-GPFUN_f = "f(P,N)=C+b*log10(P+B*N**(-g))"
+GPFUN_f = "f(P,N,a)=-0.5*log10((a+(1.0-a)*1.4**3))+C+b*log10(P+B*N**(-g))"
 C=1.0
 b=0.5
 B=1.0
 g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
+m=1.0
+fit f(P,N,a) 'testSMCFmix.txt' using 1:4:5:(log10($2)) via b,g,C,B
 A=10**C
 GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
 
+set xrange[1.0e-4:1.0e+4]
+set yrange[1.0e-3:1.0e+1]
 set key left top
-set key font "Arial,21"
-set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
-## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
+## Last datafile plotted: "smcfN1024.txt"
+#plot '1vs0/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p lc 1 title '1:0', '3vs1/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p lc 2 title '3:1', '1vs1/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p lc 3 title '1:1','1vs3/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p lc 4 title '1:3', h(P) w l lc 8 title 'fitting line'
+plot '3vs1/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p pt 1 ps 2.5 lw 2 lc rgb '#00994d' title '3:1', '1vs1/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p pt 2 ps 2.5 lw 2 lc rgb '#b366ff' title '1:1','1vs3/SMCFtmp.txt' using ($1*($4)**g):((($5+(1.0-$5)*1.4**3)**(0.5))*$2*($4)**(b*g)) w p pt 4 ps 2.5 lw 1.5 lc rgb '#ff7f00' title '1:3', h(P) w l lc 8 lw 1.5 title 'fitting line'
 
-#003300
-#2e3c12
-#45401b
-#734a2e
-#a15340
-#cf5c52
-#ff6666
-
-
-
+## (($5+(1.0-$5)*1.4**3)**(-m))*
 #    EOF

@@ -296,9 +296,11 @@ void SceneModifier::sphereSetting(FIREVV3D *firevv)
 
   //Sphere painting
   Qt3DExtras::QPhongMaterial *m_particleMaterial1 = new Qt3DExtras::QPhongMaterial();
-  m_particleMaterial1->setDiffuse(QColor(QRgb(0x47EA7E)));
+  //m_particleMaterial1->setDiffuse(QColor(QRgb(0x47EA7E)));
+  m_particleMaterial1->setDiffuse(QColor(QRgb(0x66ff00)));
   Qt3DExtras::QPhongMaterial *m_particleMaterial2 = new Qt3DExtras::QPhongMaterial();
-  m_particleMaterial2->setDiffuse(QColor(QRgb(0xCACCB2)));
+  //m_particleMaterial2->setDiffuse(QColor(QRgb(0xCACCB2)));
+  m_particleMaterial2->setDiffuse(QColor(QRgb(0x006600)));
   Qt3DExtras::QSphereMesh **m_particleMeshs;
   Qt3DCore::QTransform **m_particleTransforms;
   //Qt3D::QTranslateTransform **m_particleTranslateTransforms; //
@@ -397,10 +399,11 @@ void SceneModifier::eigvecSetting(FIREVV3D *firevv)
       qDebug()<<"Now eigvec painting..."<<endl;
 
       Qt3DExtras::QPhongMaterial *m_eigvecMaterial1 = new Qt3DExtras::QPhongMaterial();
-      m_eigvecMaterial1->setDiffuse(QColor(QRgb(0x1C05FF)));
+      //m_eigvecMaterial1->setDiffuse(QColor(QRgb(0x1C05FF)));
+      m_eigvecMaterial1->setDiffuse(QColor(QRgb(0x0066ff)));
       Qt3DExtras::QPhongMaterial *m_eigvecMaterial2 = new Qt3DExtras::QPhongMaterial();
       //m_eigvecMaterial2->setDiffuse(QColor(QRgb(0xBCC8DB)));
-      m_eigvecMaterial2->setDiffuse(QColor(QRgb(0x1C05FF)));
+      m_eigvecMaterial2->setDiffuse(QColor(QRgb(0x000066)));
       //Qt3D::QCylinderMesh **m_eigvecMeshs;
       Qt3DExtras::QSphereMesh **m_eigvecMeshs;
       Qt3DCore::QTransform **m_eigvecTransforms;

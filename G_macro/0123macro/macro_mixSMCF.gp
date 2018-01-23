@@ -175,6 +175,36 @@ set fontpath
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 
+set key left top
+set key font "Arial,16"
+
+# f10(P,N)=C10+b10*log10(P+B10*N**(-g10))
+# h10(P)=A10*(P+B10)**b10
+# GNUTERM = "qt"
+# GPFUN_f10 = "f10(P,N)=C10+b10*log10(P+B10*N**(-g10))"
+# C10=1.0
+# b10=0.5
+# B10=1.0
+# g10=1.0
+# fit f10(P,N) './1vs0/SMCF.txt' using 1:4:(log10($2)) via b10,g10,C10,B10
+# A10=10**C10
+# GPFUN_h10 = "h10(P)=A10*(P+B10)**b10"
+# plot './1vs0/SMCF.txt' using ($1*($4)**g10):($2*($4)**(b10*g10)) w p pt 1 lc 1 notitle, h10(P) w l lc 1 title '1:0'
+
+f31(P,N)=C31+b31*log10(P+B31*N**(-g31))
+h31(P)=A31*(P+B31)**b31
+GNUTERM = "qt"
+GPFUN_f31 = "f31(P,N)=C31+b31*log10(P+B31*N**(-g31))"
+C31=1.0
+b31=0.5
+B31=1.0
+g31=1.0
+fit f31(P,N) './3vs1/SMCF.txt' using 1:4:(log10($2)) via b31,g31,C31,B31
+A31=10**C31
+GPFUN_h31 = "h31(P)=A31*(P+B31)**b31"
+#replot './3vs1/SMCF.txt' using ($1*($4)**g31):($2*($4)**(b31*g31)) w p pt 2 lc 2 notitle, h31(P) w l lc 2 title '3:1'
+plot './3vs1/SMCF.txt' using ($1*($4)**g31):($2*($4)**(b31*g31)) w p ps 2 pt 1 lw 1.5 lc rgb '#00994d'  notitle, h31(P) w l lw 2 lc rgb '#00994d' title '3:1'
+
 f(P,N)=C+b*log10(P+B*N**(-g))
 h(P)=A*(P+B)**b
 GNUTERM = "qt"
@@ -183,26 +213,22 @@ C=1.0
 b=0.5
 B=1.0
 g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
+fit f(P,N) './1vs1/SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
 A=10**C
 GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
+replot './1vs1/SMCF.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 2 pt 2 lw 1.5 lc rgb '#b366ff' notitle, h(P) w l lw 2 lc rgb '#b366ff' title '1:1'
 
-set key left top
-set key font "Arial,21"
-set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
-## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
-
-#003300
-#2e3c12
-#45401b
-#734a2e
-#a15340
-#cf5c52
-#ff6666
-
-
+f13(P,N)=C13+b13*log10(P+B13*N**(-g13))
+h13(P)=A13*(P+B13)**b13
+GNUTERM = "qt"
+GPFUN_f13 = "f13(P,N)=C13+b13*log10(P+B13*N**(-g13))"
+C13=1.0
+b13=0.5
+B13=1.0
+g13=1.0
+fit f13(P,N) './1vs3/SMCF.txt' using 1:4:(log10($2)) via b13,g13,C13,B13
+A13=10**C13
+GPFUN_h13 = "h13(P)=A13*(P+B13)**b13"
+replot './1vs3/SMCF.txt' using ($1*($4)**g13):($2*($4)**(b13*g13)) w p ps 2 pt 4 lw 1.5 lc rgb '#ff7f00' notitle, h13(P) w l lw 2 lc rgb '#ff7f00' title '1:3'
 
 #    EOF

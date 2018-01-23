@@ -2,9 +2,9 @@
 #
 #    
 #    	G N U P L O T
-#    	Version 5.0 patchlevel 5    last modified 2016-10-02
+#    	Version 5.0 patchlevel 7    last modified 2017-08-16
 #    
-#    	Copyright (C) 1986-1993, 1998, 2004, 2007-2016
+#    	Copyright (C) 1986-1993, 1998, 2004, 2007-2017
 #    	Thomas Williams, Colin Kelley and many others
 #    
 #    	gnuplot home:     http://www.gnuplot.info
@@ -27,7 +27,7 @@ set style fill  empty border
 set style rectangle back fc  bgnd fillstyle   solid 1.00 border lt -1
 set style circle radius graph 0.02, first 0.00000, 0.00000 
 set style ellipse size graph 0.05, 0.03, first 0.00000 angle 0 units xy
-set dummy P, N
+set dummy x, y
 set format x "10^{%L}" 
 set format y "10^{%L}" 
 set format x2 "% h" 
@@ -41,7 +41,7 @@ set tics back
 set grid nopolar
 set grid xtics nomxtics ytics nomytics noztics nomztics \
  nox2tics nomx2tics noy2tics nomy2tics nocbtics nomcbtics
-set grid layerdefault   lt 0 linewidth 0.500,  lt 0 linewidth 0.500
+set grid layerdefault   lt 0 linecolor 0 linewidth 0.500 dashtype solid,  lt 0 linecolor 0 linewidth 0.500 dashtype solid
 set raxis
 set style parallel front  lt black linewidth 2.000 dashtype solid
 set key title "" center
@@ -71,6 +71,7 @@ set encoding default
 unset polar
 unset parametric
 unset decimalsign
+unset micro
 unset minussign
 set view 60, 30, 1, 1
 set samples 100, 100
@@ -103,25 +104,32 @@ set mx2tics default
 set my2tics default
 set mcbtics default
 set mrtics default
-set xtics border in scale 1,0.5 mirror norotate  autojustify
-set xtics  norangelimit autofreq 
+set xtics border in scale 1,0.5 mirror norotate  offset character 0, -1, 0 autojustify
+set xtics  norangelimit autofreq  font "Arial,16"
 set ytics border in scale 1,0.5 mirror norotate  autojustify
-set ytics  norangelimit autofreq 
+set ytics  norangelimit autofreq  font "Arial,16"
 set ztics border in scale 1,0.5 nomirror norotate  autojustify
-set ztics  norangelimit autofreq 
+set ztics  norangelimit autofreq  font "Arial,16"
 unset x2tics
 unset y2tics
 set cbtics border in scale 1,0.5 mirror norotate  autojustify
-set cbtics  norangelimit autofreq 
+set cbtics  norangelimit autofreq  font "Arial,16"
 set rtics axis in scale 1,0.5 nomirror norotate  autojustify
-set rtics  norangelimit autofreq 
-unset paxis 1 tics
-unset paxis 2 tics
-unset paxis 3 tics
-unset paxis 4 tics
-unset paxis 5 tics
-unset paxis 6 tics
-unset paxis 7 tics
+set rtics  norangelimit autofreq  font "Arial,16"
+set paxis 1 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 1 tics  rangelimit autofreq  font "Arial,16"
+set paxis 2 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 2 tics  rangelimit autofreq  font "Arial,16"
+set paxis 3 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 3 tics  rangelimit autofreq  font "Arial,16"
+set paxis 4 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 4 tics  rangelimit autofreq  font "Arial,16"
+set paxis 5 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 5 tics  rangelimit autofreq  font "Arial,16"
+set paxis 6 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 6 tics  rangelimit autofreq  font "Arial,16"
+set paxis 7 tics border in scale 1,0.5 nomirror norotate  autojustify
+set paxis 7 tics  rangelimit autofreq  font "Arial,16"
 set title "" 
 set title  font "" norotate
 set timestamp bottom 
@@ -131,14 +139,14 @@ set rrange [ * : * ] noreverse nowriteback
 set trange [ * : * ] noreverse nowriteback
 set urange [ * : * ] noreverse nowriteback
 set vrange [ * : * ] noreverse nowriteback
-set xlabel "" 
-set xlabel  font "" textcolor lt -1 norotate
+set xlabel "{/=30 {/Arial-Italic {/Symbol w}}" 
+set xlabel  offset character 0, -1, 0 font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  font "" textcolor lt -1 norotate
-set xrange [ * : * ] noreverse nowriteback
+set xrange [ 0.000100000 : 1.00000 ] noreverse nowriteback
 set x2range [ * : * ] noreverse nowriteback
-set ylabel "" 
-set ylabel  font "" textcolor lt -1 rotate by -270
+set ylabel "{/=30 {/Arial-Italic Y({/Symbol w})}}" 
+set ylabel  offset character -4, 0, 0 font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate by -270
 set yrange [ * : * ] noreverse nowriteback
@@ -148,7 +156,7 @@ set zlabel  font "" textcolor lt -1 norotate
 set zrange [ * : * ] noreverse nowriteback
 set cblabel "" 
 set cblabel  font "" textcolor lt -1 rotate by -270
-set cbrange [ 0.0100000 : 1.00000 ] noreverse nowriteback
+set cbrange [ * : * ] noreverse nowriteback
 set paxis 1 range [ * : * ] noreverse nowriteback
 set paxis 2 range [ * : * ] noreverse nowriteback
 set paxis 3 range [ * : * ] noreverse nowriteback
@@ -157,8 +165,8 @@ set paxis 5 range [ * : * ] noreverse nowriteback
 set paxis 6 range [ * : * ] noreverse nowriteback
 set paxis 7 range [ * : * ] noreverse nowriteback
 set zero 1e-08
-set lmargin  8
-set bmargin  -1
+set lmargin  14
+set bmargin  5
 set rmargin  -1
 set tmargin  -1
 set locale "ja_JP.UTF-8"
@@ -174,35 +182,8 @@ set loadpath
 set fontpath 
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
-
-f(P,N)=C+b*log10(P+B*N**(-g))
-h(P)=A*(P+B)**b
 GNUTERM = "qt"
-GPFUN_f = "f(P,N)=C+b*log10(P+B*N**(-g))"
-C=1.0
-b=0.5
-B=1.0
-g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
-A=10**C
-GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
-
-set key left top
-set key font "Arial,21"
-set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
-## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
-
-#003300
-#2e3c12
-#45401b
-#734a2e
-#a15340
-#cf5c52
-#ff6666
-
-
-
+x = 0.0
+## Last datafile plotted: "EigCum00000_0.649_noZeroEig.txt"
+plot 'EigCum00000_0.649_noZeroEig.txt' using 2:3 w p pt 2 lc rgb '#009b26' notitle, 1.0/256 w l lt 0 lw 3 notitle
 #    EOF

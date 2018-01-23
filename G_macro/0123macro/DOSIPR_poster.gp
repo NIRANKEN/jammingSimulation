@@ -27,7 +27,7 @@ set style fill  empty border
 set style rectangle back fc  bgnd fillstyle   solid 1.00 border lt -1
 set style circle radius graph 0.02, first 0.00000, 0.00000 
 set style ellipse size graph 0.05, 0.03, first 0.00000 angle 0 units xy
-set dummy P, N
+set dummy x, y
 set format x "10^{%L}" 
 set format y "10^{%L}" 
 set format x2 "% h" 
@@ -41,7 +41,7 @@ set tics back
 set grid nopolar
 set grid xtics nomxtics ytics nomytics noztics nomztics \
  nox2tics nomx2tics noy2tics nomy2tics nocbtics nomcbtics
-set grid layerdefault   lt 0 linewidth 0.500,  lt 0 linewidth 0.500
+set grid layerdefault   lt 0 linewidth 0.500 dashtype solid,  lt 0 linewidth 0.500 dashtype solid
 set raxis
 set style parallel front  lt black linewidth 2.000 dashtype solid
 set key title "" center
@@ -131,24 +131,23 @@ set rrange [ * : * ] noreverse nowriteback
 set trange [ * : * ] noreverse nowriteback
 set urange [ * : * ] noreverse nowriteback
 set vrange [ * : * ] noreverse nowriteback
-set xlabel "" 
 set xlabel  font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  font "" textcolor lt -1 norotate
-set xrange [ * : * ] noreverse nowriteback
-set x2range [ * : * ] noreverse nowriteback
-set ylabel "" 
-set ylabel  font "" textcolor lt -1 rotate by -270
+set xrange [ 1.00000e-06 : 1.00000 ] noreverse nowriteback
+set x2range [ 1.00000e-06 : 1.00000 ] noreverse nowriteback
+set ylabel "{/=30 {/Arial-Italic D({/Symbol w})}}" 
+set ylabel  offset character -3, 0, 0 font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate by -270
-set yrange [ * : * ] noreverse nowriteback
-set y2range [ * : * ] noreverse nowriteback
+set yrange [ 0.0100000 : 100.000 ] noreverse nowriteback
+set y2range [ 0.0100000 : 100.000 ] noreverse nowriteback
 set zlabel "" 
 set zlabel  font "" textcolor lt -1 norotate
 set zrange [ * : * ] noreverse nowriteback
 set cblabel "" 
 set cblabel  font "" textcolor lt -1 rotate by -270
-set cbrange [ 0.0100000 : 1.00000 ] noreverse nowriteback
+set cbrange [ * : * ] noreverse nowriteback
 set paxis 1 range [ * : * ] noreverse nowriteback
 set paxis 2 range [ * : * ] noreverse nowriteback
 set paxis 3 range [ * : * ] noreverse nowriteback
@@ -157,8 +156,8 @@ set paxis 5 range [ * : * ] noreverse nowriteback
 set paxis 6 range [ * : * ] noreverse nowriteback
 set paxis 7 range [ * : * ] noreverse nowriteback
 set zero 1e-08
-set lmargin  8
-set bmargin  -1
+set lmargin  13
+set bmargin  5
 set rmargin  -1
 set tmargin  -1
 set locale "ja_JP.UTF-8"
@@ -174,35 +173,23 @@ set loadpath
 set fontpath 
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
-
-f(P,N)=C+b*log10(P+B*N**(-g))
-h(P)=A*(P+B)**b
 GNUTERM = "qt"
-GPFUN_f = "f(P,N)=C+b*log10(P+B*N**(-g))"
-C=1.0
-b=0.5
-B=1.0
-g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
-A=10**C
-GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
-
-set key left top
-set key font "Arial,21"
-set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
-## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
-
-#003300
-#2e3c12
-#45401b
-#734a2e
-#a15340
-#cf5c52
-#ff6666
-
-
+x = 0.0
+se multi layout 2,1
+set bmargin 1
+unset format x ""
+unset xlabel
+## Last datafile plotted: "./6.5_6.0/CharacteristicFrequency2_SM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt"
+plot 11.772*((1.0/0.0103451)*x)**2 w l lw 2 lt 0 notitle, 11.772*((1.0/5.64387e-05)*x)**2 w l lw 2 lt 0 notitle,'./1.5_1.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#00e150' notitle, './2.0_1.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#00d65b' notitle, './2.5_2.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#00cb66' notitle, './3.0_2.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#00c170' notitle, './3.5_3.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#00b67b' notitle, './4.0_3.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#009b86' notitle, './4.5_4.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#009f92' notitle, './5.0_4.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#00939e' notitle, './5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#0089a8' notitle, './6.0_5.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#007cb5' notitle, './6.5_6.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:11 w lp pt 7 ps 0.5 lc rgb '#0050e1' notitle, './1.5_1.0/CharacteristicFrequency2_SM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 2:3 w lp pt 11 ps 3 lc rgb '#00e150' notitle, './6.5_6.0/CharacteristicFrequency2_SM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 2:3 w lp pt 11 ps 3 lc rgb '#0050e1' notitle
+# 要cfreq値設定!!!!
+set format x "10^{%L}"
+set yrange [ 0.00010000 : 1.00000 ] noreverse nowriteback
+#set y2range [ 0.000100000 : 1.00000 ] noreverse nowriteback
+set xlabel "{/=30 {/Arial-Italic {/Symbol w}}}" 
+set ylabel "{/=30 {/Arial-Italic Y({/Symbol w})}}"
+#set tmargin -3 
+set bmargin  5
+plot './1.5_1.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#00e150' notitle, './2.0_1.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#00d65b' notitle, './2.5_2.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#00cb66' notitle, './3.0_2.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#00c170' notitle, './3.5_3.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#00b67b' notitle, './4.0_3.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#009b86' notitle, './4.5_4.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#009f92' notitle, './5.0_4.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#00939e' notitle, './5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#0089a8' notitle, './6.0_5.5/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#007cb5' notitle, './6.5_6.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN2048.txt' using 1:2 w lp pt 7 ps 0.5 lc rgb '#0050e1' notitle, 1.0/2048 w l lt 0 lw 5 lc rgb 'gray' notitle
+unse multi
 
 #    EOF

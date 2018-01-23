@@ -2,9 +2,9 @@
 #
 #    
 #    	G N U P L O T
-#    	Version 5.0 patchlevel 5    last modified 2016-10-02
+#    	Version 5.0 patchlevel 7    last modified 2017-08-16
 #    
-#    	Copyright (C) 1986-1993, 1998, 2004, 2007-2016
+#    	Copyright (C) 1986-1993, 1998, 2004, 2007-2017
 #    	Thomas Williams, Colin Kelley and many others
 #    
 #    	gnuplot home:     http://www.gnuplot.info
@@ -27,9 +27,9 @@ set style fill  empty border
 set style rectangle back fc  bgnd fillstyle   solid 1.00 border lt -1
 set style circle radius graph 0.02, first 0.00000, 0.00000 
 set style ellipse size graph 0.05, 0.03, first 0.00000 angle 0 units xy
-set dummy P, N
-set format x "10^{%L}" 
-set format y "10^{%L}" 
+set dummy x, y
+set format x "% h" 
+set format y "% h" 
 set format x2 "% h" 
 set format y2 "% h" 
 set format z "% h" 
@@ -41,7 +41,7 @@ set tics back
 set grid nopolar
 set grid xtics nomxtics ytics nomytics noztics nomztics \
  nox2tics nomx2tics noy2tics nomy2tics nocbtics nomcbtics
-set grid layerdefault   lt 0 linewidth 0.500,  lt 0 linewidth 0.500
+set grid layerdefault   lt 0 linecolor 0 linewidth 0.500,  lt 0 linecolor 0 linewidth 0.500
 set raxis
 set style parallel front  lt black linewidth 2.000 dashtype solid
 set key title "" center
@@ -71,6 +71,7 @@ set encoding default
 unset polar
 unset parametric
 unset decimalsign
+unset micro
 unset minussign
 set view 60, 30, 1, 1
 set samples 100, 100
@@ -135,20 +136,20 @@ set xlabel ""
 set xlabel  font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  font "" textcolor lt -1 norotate
-set xrange [ * : * ] noreverse nowriteback
-set x2range [ * : * ] noreverse nowriteback
+set xrange [ 3.14095e-06 : 0.314095 ] noreverse nowriteback
+set x2range [ 7.63326e-06 : 0.0606331 ] noreverse nowriteback
 set ylabel "" 
 set ylabel  font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate by -270
-set yrange [ * : * ] noreverse nowriteback
-set y2range [ * : * ] noreverse nowriteback
+set yrange [ 0.00325341 : 325.341 ] noreverse nowriteback
+set y2range [ 0.0161188 : 29.4271 ] noreverse nowriteback
 set zlabel "" 
 set zlabel  font "" textcolor lt -1 norotate
 set zrange [ * : * ] noreverse nowriteback
 set cblabel "" 
 set cblabel  font "" textcolor lt -1 rotate by -270
-set cbrange [ 0.0100000 : 1.00000 ] noreverse nowriteback
+set cbrange [ * : * ] noreverse nowriteback
 set paxis 1 range [ * : * ] noreverse nowriteback
 set paxis 2 range [ * : * ] noreverse nowriteback
 set paxis 3 range [ * : * ] noreverse nowriteback
@@ -157,7 +158,7 @@ set paxis 5 range [ * : * ] noreverse nowriteback
 set paxis 6 range [ * : * ] noreverse nowriteback
 set paxis 7 range [ * : * ] noreverse nowriteback
 set zero 1e-08
-set lmargin  8
+set lmargin  -1
 set bmargin  -1
 set rmargin  -1
 set tmargin  -1
@@ -174,35 +175,9 @@ set loadpath
 set fontpath 
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
-
-f(P,N)=C+b*log10(P+B*N**(-g))
-h(P)=A*(P+B)**b
 GNUTERM = "qt"
-GPFUN_f = "f(P,N)=C+b*log10(P+B*N**(-g))"
-C=1.0
-b=0.5
-B=1.0
-g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
-A=10**C
-GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
-
-set key left top
-set key font "Arial,21"
-set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
-## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
-
-#003300
-#2e3c12
-#45401b
-#734a2e
-#a15340
-#cf5c52
-#ff6666
-
-
-
+x = 0.0
+M(a)=(a+(1-a)*1.4**3)**(0.5)
+## Last datafile plotted: "3by1/Default/5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt"
+plot '1by0/Default/1.5_1.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using 1:11 w lp pt 7 ps 0.5 lc 1, '1by0/Default/2.5_2.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using 1:11 w lp pt 7 ps 0.5 lc 1 notitle, '1by0/Default/3.5_3.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using 1:11 w lp pt 7 ps 0.5 lc 1 notitle, '1by0/Default/4.5_4.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using 1:11 w lp pt 7 ps 0.5 lc 1 notitle, '1by0/Default/5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using 1:11 w lp pt 7 ps 0.5 lc 1 notitle, '3by1/Default/1.5_1.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.75)):11 w lp pt 7 ps 0.5 lc 2, '3by1/Default/2.5_2.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.75)):11 w lp pt 7 ps 0.5 lc 2 notitle, '3by1/Default/3.5_3.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.75)):11 w lp pt 7 ps 0.5 lc 2 notitle, '3by1/Default/4.5_4.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.75)):11 w lp pt 7 ps 0.5 lc 2 notitle, '3by1/Default/5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.75)):11 w lp pt 7 ps 0.5 lc 2 notitle, '1by1/Default/1.5_1.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.5)):11 w lp pt 7 ps 0.5 lc 3, '1by1/Default/2.5_2.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.5)):11 w lp pt 7 ps 0.5 lc 3 notitle, '1by1/Default/3.5_3.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.5)):11 w lp pt 7 ps 0.5 lc 3 notitle, '1by1/Default/4.5_4.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.5)):11 w lp pt 7 ps 0.5 lc 3 notitle, '1by1/Default/5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.5)):11 w lp pt 7 ps 0.5 lc 3 notitle,'1by3/Default/1.5_1.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.25)):11 w lp pt 7 ps 0.5 lc 4, '1by3/Default/2.5_2.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.25)):11 w lp pt 7 ps 0.5 lc 4 notitle, '1by3/Default/3.5_3.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.25)):11 w lp pt 7 ps 0.5 lc 4 notitle, '1by3/Default/4.5_4.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.25)):11 w lp pt 7 ps 0.5 lc 4 notitle, '1by3/Default/5.5_5.0/AdditionalSM_EIGEnsAve_BR0.05_0524_3DBIN4096.txt' using ($1*M(0.25)):11 w lp pt 7 ps 0.5 lc 4 notitle
 #    EOF

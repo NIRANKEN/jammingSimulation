@@ -140,7 +140,7 @@ void FIREVV3D::calculateEigData3D() {
     if(Eigval[j]<-EPS)
       eigplus=false;
   }
-  //JT::WriteEigInfo(EigMat,Eigval,seed,PHI,3,Prt1,Prt2,ipr);
+  JT::WriteEigInfo(EigMat,Eigval,seed,PHI,3,Prt1,Prt2,ipr);
 
   set_EigMatrix(EigMat);
   set_EigValue(Eigval);

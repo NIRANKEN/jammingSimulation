@@ -175,25 +175,20 @@ set fontpath
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 
-f(P,N)=C+b*log10(P+B*N**(-g))
-h(P)=A*(P+B)**b
-GNUTERM = "qt"
-GPFUN_f = "f(P,N)=C+b*log10(P+B*N**(-g))"
-C=1.0
-b=0.5
-B=1.0
-g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
-A=10**C
-GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
-
+set key box lw 3 dt 3 lc rgb '#b366ff'
 set key left top
-set key font "Arial,21"
+set key font "Arial,16"
 set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
+plot 'smcfN128.txt' using 1:2 w p ps 3 lw 3 lc rgb '#003300' title '  N128', 'smcfN256.txt' using 1:2 w p ps 3 lw 3 lc rgb '#2e3c12' title '  N256', 'smcfN512.txt' using 1:2 w p ps 3 lw 3 lc rgb '#45401b' title '  N512','smcfN1024.txt' using 1:2 w p ps 3 lw 3 lc rgb '#734a2e' title '  N1024','smcfN2048.txt' using 1:2 w p ps 3 pt 6 lw 3 lc rgb '#a15340' title '  N2048', 'smcfN4096.txt' using 1:2 w p ps 3 pt 8 lw 3 lc rgb '#cf5c52' title '  N4096'
+## plot 'smcfN64.txt' using 1:2 w p ps 3 lw 3 lc 1, replot 'smcfN128.txt' using 1:2 w p ps 3 lw 3 lc 2, 'smcfN256.txt' using 1:2w p ps 3 lw 3 lc 3, 'smcfN512.txt' using 1:2 w p ps 3 lw 3 lc 4,'smcfN1024.txt' using 1:2 w p ps 3 lw 3 lc 5, h(P) w l lw 3 lc 6  ## N64~1024 ver.
 ## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
+
+#dc0000
+#dc2e00
+#dc4500
+#dc7f00
+#dcac00
+#dcdc00
 
 #003300
 #2e3c12
@@ -202,7 +197,6 @@ plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#0
 #a15340
 #cf5c52
 #ff6666
-
 
 
 #    EOF

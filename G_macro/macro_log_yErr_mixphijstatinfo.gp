@@ -27,7 +27,7 @@ set style fill  empty border
 set style rectangle back fc  bgnd fillstyle   solid 1.00 border lt -1
 set style circle radius graph 0.02, first 0.00000, 0.00000 
 set style ellipse size graph 0.05, 0.03, first 0.00000 angle 0 units xy
-set dummy P, N
+set dummy N, y
 set format x "10^{%L}" 
 set format y "10^{%L}" 
 set format x2 "% h" 
@@ -135,13 +135,13 @@ set xlabel ""
 set xlabel  font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  font "" textcolor lt -1 norotate
-set xrange [ * : * ] noreverse nowriteback
+set xrange [ 100.000 : 10000.0 ] noreverse nowriteback
 set x2range [ * : * ] noreverse nowriteback
 set ylabel "" 
 set ylabel  font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate by -270
-set yrange [ * : * ] noreverse nowriteback
+set yrange [ 0.00010000 : 0.010000 ] noreverse nowriteback
 set y2range [ * : * ] noreverse nowriteback
 set zlabel "" 
 set zlabel  font "" textcolor lt -1 norotate
@@ -175,34 +175,52 @@ set fontpath
 set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 
-f(P,N)=C+b*log10(P+B*N**(-g))
-h(P)=A*(P+B)**b
-GNUTERM = "qt"
-GPFUN_f = "f(P,N)=C+b*log10(P+B*N**(-g))"
-C=1.0
-b=0.5
-B=1.0
-g=1.0
-fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via b,g,C,B
-A=10**C
-GPFUN_h = "h(P)=A*(P+B)**b"
-## Last datafile plotted: "smcfN1024.txt"
-
-set key left top
-set key font "Arial,21"
+set key font "Arial,16"
 set tics font "Arial,16"
-plot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#003300' title 'N128', 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#2e3c12' title 'N256', 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#45401b' title 'N512','smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc rgb '#734a2e' title 'N1024','smcfN2048.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 6 lw 2 lc rgb '#a15340' title 'N2048', 'smcfN4096.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 pt 8 lw 2 lc rgb '#cf5c52' title 'N4096', h(P) w l lw 2 lc 8 title 'fitting line'
-## plot 'smcfN64.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 1, replot 'smcfN128.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 2, 'smcfN256.txt' using ($1*($4)**g):($2*($4)**(b*g))w p ps 5 lw 2 lc 3, 'smcfN512.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 4,'smcfN1024.txt' using ($1*($4)**g):($2*($4)**(b*g)) w p ps 5 lw 2 lc 5, h(P) w l lc 6  ## N64~1024 ver.
-## fit f(P,N) 'SMCF.txt' using 1:4:(log10($2)) via C,b,B,g
 
-#003300
-#2e3c12
-#45401b
-#734a2e
-#a15340
-#cf5c52
-#ff6666
+# f(N)=log10(P-A*N**(-n))
+# g(N)=A*N**(-n)
+# GNUTERM = "qt"
+# GPFUN_f = "f(N)=log10(P-A*N**(-n))"
+# P=1.0
+# A=1.0
+# n=1.0
+# fit f(N) '1vs0/PHIJstatinfo.txt' using 1:(log10($2)):(log10($5)) yerror via P,A,n
+# GPFUN_g = "g(N)=A*N**(-n)"
+# plot './1vs0/PHIJstatinfo_all.txt' using 1:(P-$2):5 w yerrorbars pt 1 ps 3.0 lw 3 lc 1 notitle, g(N) w l lw 2 lc 1 title '1:0'
 
+f31(N)=log10(P31-A31*N**(-n31))
+g31(N)=A31*N**(-n31)
+P31=1.0
+A31=1.0
+n31=1.0
+GPFUN_f31 = "f31(N)=log10(P31-A31*N**(-n31))"
+GPFUN_g31 = "g31(N)=A31*N**(-n31)"
+fit f31(N) './3vs1/PHIJstatinfo.txt' using 1:(log10($2)):(log10($5)) yerror via P31,A31,n31
+#replot './3vs1/PHIJstatinfo.txt' using 1:(P31-$2):5 w yerrorbars pt 2 ps 3.0 lw 3 lc 2 notitle, g31(N) w l lw 2 lc 2 title '3:1'
+plot './3vs1/PHIJstatinfo.txt' using 1:(P31-$2):5 w yerrorbars ps 3.0 pt 1 lw 3 lc rgb '#00994d' notitle, g31(N) w l lw 2 lc rgb '#00994d' title '3:1'
 
+f11(N)=log10(P11-A11*N**(-n11))
+g11(N)=A11*N**(-n11)
+P11=1.0
+A11=1.0
+n11=1.0
+GPFUN_f11 = "f11(N)=log10(P11-A11*N**(-n11))"
+GPFUN_g11 = "g11(N)=A11*N**(-n11)"
+fit f11(N) './1vs1/PHIJstatinfo.txt' using 1:(log10($2)):(log10($5)) yerror via P11,A11,n11
+replot './1vs1/PHIJstatinfo.txt' using 1:(P11-$2):5 w yerrorbars ps 3.0 pt 2 lw 3 lc rgb '#b366ff' notitle, g11(N) w l lw 2 lc rgb '#b366ff' title '1:1'
+
+f13(N)=log10(P13-A13*N**(-n13))
+g13(N)=A13*N**(-n13)
+P13=1.0
+A13=1.0
+n13=1.0
+GPFUN_f13 = "f13(N)=log10(P13-A13*N**(-n13))"
+GPFUN_g13 = "g13(N)=A13*N**(-n13)"
+fit f13(N) './1vs3/PHIJstatinfo.txt' using 1:(log10($2)):(log10($5)) yerror via P13,A13,n13
+replot './1vs3/PHIJstatinfo.txt' using 1:(P13-$2):5 w yerrorbars ps 3.0 pt 4 lw 3 lc rgb '#ff7f00' notitle, g13(N) w l lw 2 lc rgb '#ff7f00' title '1:3'
+
+#replot (N<10**3?NaN:(N>5*10**3?NaN:(3*10**(-3))*(0.5*N*10**(-3))**(-0.47))) w l lw 2 lc rgb '#3f3f3f' dt 2 notitle
+replot (2*10**(-3))*(0.5*N*10**(-3))**(-0.47) w l lw 2 lc rgb '#3f3f3f' dt 2 notitle
 
 #    EOF
