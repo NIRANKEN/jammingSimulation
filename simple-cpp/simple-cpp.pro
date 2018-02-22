@@ -3,6 +3,7 @@
 #}
 
 QT += 3dcore 3dinput gui core widgets 3dextras
+INCLUDEPATH += . /home/y-kimura/lib
 CONFIG += c++11
 
 # Input
