@@ -1,0 +1,17 @@
+  ###
+  # These are programs for simulation of jamming transition and statistical analysis.
+  # for using them, you need to deploy EIGEN packages and numerical recipes packages(C++ 2ndEdition) in "~/lib/" .
+  ###
+
+  # there is a short explanation below.
+
+  Analysis/ ... programs and shellscripts in order to statistic about simulated samples (CUI test programs)
+  FIREprogram ... CUI programs (2D, and 3D). bidisperse soft spheres with finite-range harmonic repulsive potential 
+  FIREprogram/GUI/ ... GUI programs with Qt5 (2D). you can run jamming simulation graphically.
+  FIREshellscript/ ... shellscripts for CUI 
+  G_macro/ ... gnuplot macros for the data after taking statistical average
+  bin/ ... a bit useful shellscripts
+  qt3dtest/ ... the test data for 3D GUI programs (simple-cpp)
+  simple-cpp/ ... GUI programs with Qt5 (3D). you can only display a coordination of jammed packings.
+  squarelattice/ ... for check eigenvibration simulation program is valid or not to calculate lattice coordinations. (square and triangle) 
+
